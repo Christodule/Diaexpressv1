@@ -63,6 +63,33 @@
 ### Layouts
 - `DashboardLayout`: Layout principal avec sidebar et navigation
 
+## Backend Express (server.js)
+
+Le backend est monte dans `server.js` avec les modules:
+
+- `/api/v1/auth`
+- `/api/v1/users`
+- `/api/v1/quotes`
+- `/api/v1/shipments`
+- `/api/v1/bookings`
+- `/api/v1/tracking`
+- `/api/v1/pricing`
+- `/api/v1/package-types`
+- `/api/v1/expeditions`
+- `/api/v1/admin-quotes`
+- `/api/v1/market-points`
+- `/api/v1/payments`
+- `/api/v1/addresses`
+- `/api/v1/reservations`
+- `/api/v1/schedules`
+- `/api/v1/uploads`
+
+### Administration
+
+- `/api/v1/admin` (v1/v2)
+- `/api/admin` (legacy)
+- `/api/v1/public` (endpoints publics client: health, quote-request, reservation, pricing-estimate, tracking)
+
 ### Components réutilisables
 - `Header`: En-tête de la landing page
 - `Hero`: Section hero avec image de fond

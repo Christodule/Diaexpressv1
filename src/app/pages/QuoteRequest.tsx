@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Package, MapPin, Calendar, Weight, Ruler, FileText, Send } from "lucide-react";
+import { createQuoteRequest, estimatePricing } from "../lib/api";
 
 export function QuoteRequest() {
   const [formData, setFormData] = useState({
@@ -12,11 +13,58 @@ export function QuoteRequest() {
     description: "",
     insurance: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const numericWeight = useMemo(() => Number(formData.weight || 0), [formData.weight]);
+
+  const fetchEstimate = async () => {
+    if (!numericWeight) {
+      setEstimatedPrice(null);
+      return;
+    }
+    try {
+      const estimate = await estimatePricing(formData.packageType, numericWeight);
+      setEstimatedPrice(estimate.estimateFcfa);
+    } catch {
+      setEstimatedPrice(null);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Quote request:", formData);
+    setIsSubmitting(true);
+    setRequestStatus(null);
+
+    try {
+      const fallbackAmount = numericWeight * 1500;
+      await createQuoteRequest({
+        origin: formData.origin,
+        destination: formData.destination,
+        weightKg: numericWeight,
+        packageType: formData.packageType,
+        pickupDate: formData.pickupDate,
+        estimatedAmountFcfa: estimatedPrice ?? fallbackAmount,
+      });
+      setRequestStatus({
+        type: "success",
+        message: "Votre demande de devis a bien ete enregistree.",
+      });
+    } catch (error) {
+      setRequestStatus({
+        type: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Impossible de soumettre votre demande pour le moment.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -28,6 +76,18 @@ export function QuoteRequest() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {requestStatus && (
+          <div
+            className={`rounded-lg border px-4 py-3 text-sm ${
+              requestStatus.type === "success"
+                ? "border-green-200 bg-green-50 text-green-700"
+                : "border-red-200 bg-red-50 text-red-700"
+            }`}
+          >
+            {requestStatus.message}
+          </div>
+        )}
+
         {/* Origin & Destination */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -95,7 +155,10 @@ export function QuoteRequest() {
                 </label>
                 <select
                   value={formData.packageType}
-                  onChange={(e) => setFormData({ ...formData, packageType: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, packageType: e.target.value })
+                  }
+                  onBlur={fetchEstimate}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
                 >
                   <option value="standard">Standard</option>
@@ -119,9 +182,17 @@ export function QuoteRequest() {
                 step="0.1"
                 value={formData.weight}
                 onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                onBlur={fetchEstimate}
                 placeholder="Ex: 25.5"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
               />
+            </div>
+
+            <div className="rounded-lg border border-[#6fccd4]/30 bg-[#6fccd4]/10 p-4">
+              <p className="text-xs text-gray-600">Estimation transport</p>
+              <p className="mt-1 text-xl font-bold text-[#f1580c]">
+                {(estimatedPrice ?? numericWeight * 1500).toLocaleString()} FCFA
+              </p>
             </div>
 
             <div>
@@ -240,10 +311,11 @@ export function QuoteRequest() {
           </button>
           <button
             type="submit"
-            className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+            disabled={isSubmitting}
+            className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             <Send className="w-5 h-5" />
-            Demander un devis
+            {isSubmitting ? "Envoi en cours..." : "Demander un devis"}
           </button>
         </div>
       </form>

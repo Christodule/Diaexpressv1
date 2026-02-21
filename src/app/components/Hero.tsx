@@ -1,4 +1,5 @@
 import heroImage from "figma:asset/fecfec959c9da274c13eeb8681fe54b680ad65c8.png";
+import { Link } from "react-router";
 
 export function Hero() {
   return (
@@ -32,12 +33,15 @@ export function Hero() {
           </div>
 
           {/* CTA Button */}
-          <button className="bg-[#f1580c] hover:bg-[#d14a0a] text-[#f4fee8] px-8 py-4 rounded-lg transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg">
+          <Link
+            to="/track-shipment"
+            className="inline-flex bg-[#f1580c] hover:bg-[#d14a0a] text-[#f4fee8] px-8 py-4 rounded-lg transition-all transform hover:scale-105 items-center gap-3 shadow-lg"
+          >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
             <span className="text-lg font-medium">Suivez votre colis</span>
-          </button>
+          </Link>
         </div>
       </div>
 

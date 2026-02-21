@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FileText, Search, Filter, Eye, CheckCircle, XCircle, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
+import { fetchQuotes, type Quote } from "../lib/api";
 
-const quotes = [
+const fallbackQuotes = [
   {
     id: "DEV-2024-015",
     date: "2026-02-18",
@@ -57,8 +58,49 @@ const statusConfig = {
 };
 
 export function Quotes() {
+  const [quotes, setQuotes] = useState(fallbackQuotes);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState("");
+
+  useEffect(() => {
+    const loadQuotes = async () => {
+      try {
+        const apiQuotes = await fetchQuotes();
+        setQuotes(
+          apiQuotes.map((quote: Quote) => ({
+            id: quote.id,
+            date: quote.createdAt?.slice(0, 10) ?? new Date().toISOString().slice(0, 10),
+            origin: quote.origin,
+            destination: quote.destination,
+            weight: `${quote.weightKg} kg`,
+            status: quote.status,
+            statusLabel:
+              quote.status === "approved"
+                ? "Approuve"
+                : quote.status === "pending"
+                  ? "En attente"
+                  : quote.status === "rejected"
+                    ? "Refuse"
+                    : "Expire",
+            amount: `${Number(quote.amountFcfa ?? 0).toLocaleString()} FCFA`,
+            validUntil: quote.pickupDate ?? "-",
+          })),
+        );
+      } catch (error) {
+        setApiError(
+          error instanceof Error
+            ? error.message
+            : "Erreur lors du chargement des devis.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadQuotes();
+  }, []);
 
   const filteredQuotes = quotes.filter((quote) => {
     const matchesSearch =
@@ -87,6 +129,12 @@ export function Quotes() {
       </div>
 
       {/* Stats */}
+      {apiError && (
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+          {apiError} Affichage des donnees de demonstration.
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
           <p className="text-sm text-gray-600">Total</p>
@@ -144,7 +192,11 @@ export function Quotes() {
 
       {/* Quotes List */}
       <div className="space-y-4">
-        {filteredQuotes.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+            <p className="text-gray-500">Chargement des devis...</p>
+          </div>
+        ) : filteredQuotes.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
             <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">Aucun devis trouvé</p>

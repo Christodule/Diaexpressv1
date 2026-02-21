@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Search, Package, MapPin, Calendar, CheckCircle, Clock, Truck, AlertCircle, Download } from "lucide-react";
+import { fetchTrackingRecord } from "../lib/api";
 
-const trackingData = {
-  id: "DXP-2024-001",
+const fallbackTrackingData = {
+  id: "TRK-2026-001",
   status: "in_transit",
   statusLabel: "En transit",
   progress: 60,
@@ -57,12 +58,62 @@ const trackingData = {
 };
 
 export function TrackShipment() {
-  const [trackingNumber, setTrackingNumber] = useState("DXP-2024-001");
+  const [trackingNumber, setTrackingNumber] = useState("TRK-2026-001");
   const [showTracking, setShowTracking] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
+  const [apiError, setApiError] = useState("");
+  const [trackingData, setTrackingData] = useState(fallbackTrackingData);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const mappedTrackingData = useMemo(() => trackingData, [trackingData]);
+
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    setShowTracking(true);
+    setIsSearching(true);
+    setApiError("");
+    try {
+      const record = await fetchTrackingRecord(trackingNumber);
+      setTrackingData({
+        id: record.trackingNumber,
+        status: record.status,
+        statusLabel:
+          record.status === "in_transit"
+            ? "En transit"
+            : record.status === "delivered"
+              ? "Livre"
+              : record.status === "customs"
+                ? "En douane"
+                : "Mise a jour",
+        progress: record.shipment?.progress ?? 40,
+        origin: record.shipment?.origin ?? "N/A",
+        destination: record.shipment?.destination ?? "N/A",
+        currentLocation: record.shipment?.currentLocation ?? record.events[0]?.location ?? "N/A",
+        estimatedDelivery: record.shipment?.estimatedDelivery ?? "-",
+        weight: "N/A",
+        carrier: "DIAEXPRESS Logistics",
+        events: record.events.map((event) => ({
+          ...event,
+          icon:
+            event.status.toLowerCase().includes("collect")
+              ? Package
+              : event.status.toLowerCase().includes("transit")
+                ? Truck
+                : event.status.toLowerCase().includes("douane")
+                  ? CheckCircle
+                  : MapPin,
+          completed: true,
+        })),
+      });
+      setShowTracking(true);
+    } catch (error) {
+      setApiError(
+        error instanceof Error
+          ? error.message
+          : "Numero de suivi introuvable.",
+      );
+      setShowTracking(false);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   return (
@@ -88,12 +139,19 @@ export function TrackShipment() {
           </div>
           <button
             type="submit"
-            className="px-8 py-3 bg-[#f1580c] hover:bg-[#d14a0a] text-white font-bold rounded-lg transition-colors"
+            disabled={isSearching}
+            className="px-8 py-3 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors"
           >
-            Suivre
+            {isSearching ? "Recherche..." : "Suivre"}
           </button>
         </form>
       </div>
+
+      {apiError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {apiError}
+        </div>
+      )}
 
       {showTracking && (
         <>
@@ -103,7 +161,7 @@ export function TrackShipment() {
               <div>
                 <h2 className="text-2xl font-bold mb-2">{trackingData.id}</h2>
                 <p className="text-white/90">
-                  Statut: <span className="font-bold">{trackingData.statusLabel}</span>
+                  Statut: <span className="font-bold">{mappedTrackingData.statusLabel}</span>
                 </p>
               </div>
               <button className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2">
@@ -116,12 +174,12 @@ export function TrackShipment() {
             <div className="mb-6">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-white/90 text-sm">Progression</p>
-                <p className="font-bold">{trackingData.progress}%</p>
+                <p className="font-bold">{mappedTrackingData.progress}%</p>
               </div>
               <div className="w-full bg-white/20 rounded-full h-3">
                 <div
                   className="bg-white h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${trackingData.progress}%` }}
+                  style={{ width: `${mappedTrackingData.progress}%` }}
                 ></div>
               </div>
             </div>
@@ -130,24 +188,24 @@ export function TrackShipment() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-white/80 text-sm mb-1">Origine</p>
-                <p className="font-bold">{trackingData.origin}</p>
+                <p className="font-bold">{mappedTrackingData.origin}</p>
               </div>
               <div>
                 <p className="text-white/80 text-sm mb-1">Destination</p>
-                <p className="font-bold">{trackingData.destination}</p>
+                <p className="font-bold">{mappedTrackingData.destination}</p>
               </div>
               <div>
                 <p className="text-white/80 text-sm mb-1">Position actuelle</p>
                 <p className="font-bold flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
-                  {trackingData.currentLocation}
+                  {mappedTrackingData.currentLocation}
                 </p>
               </div>
               <div>
                 <p className="text-white/80 text-sm mb-1">Livraison estimée</p>
                 <p className="font-bold flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
-                  {trackingData.estimatedDelivery}
+                  {mappedTrackingData.estimatedDelivery}
                 </p>
               </div>
             </div>
@@ -159,11 +217,11 @@ export function TrackShipment() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Poids</p>
-                <p className="font-bold text-gray-900">{trackingData.weight}</p>
+                <p className="font-bold text-gray-900">{mappedTrackingData.weight}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Transporteur</p>
-                <p className="font-bold text-gray-900">{trackingData.carrier}</p>
+                <p className="font-bold text-gray-900">{mappedTrackingData.carrier}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500 mb-1">Mode de transport</p>
@@ -176,7 +234,7 @@ export function TrackShipment() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-6">Historique de suivi</h3>
             <div className="space-y-6">
-              {trackingData.events.map((event, index) => {
+              {mappedTrackingData.events.map((event, index) => {
                 const IconComponent = event.icon;
                 return (
                   <div key={index} className="flex gap-4">
@@ -193,7 +251,7 @@ export function TrackShipment() {
                       >
                         <IconComponent className="w-6 h-6" />
                       </div>
-                      {index < trackingData.events.length - 1 && (
+                      {index < mappedTrackingData.events.length - 1 && (
                         <div
                           className={`w-0.5 h-full min-h-[40px] ${
                             event.completed ? "bg-green-300" : "bg-gray-200"

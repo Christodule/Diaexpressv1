@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Package, Search, Filter, MapPin, Calendar, Download } from "lucide-react";
 import { Link } from "react-router";
+import { fetchShipments, type Shipment } from "../lib/api";
 
-const shipments = [
+const fallbackShipments = [
   {
     id: "DXP-2024-001",
     date: "2026-02-15",
@@ -66,8 +67,60 @@ const statusConfig = {
 };
 
 export function Shipments() {
+  const [shipments, setShipments] = useState(fallbackShipments);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState("");
+
+  useEffect(() => {
+    const loadShipments = async () => {
+      try {
+        const apiShipments = await fetchShipments();
+        setShipments(
+          apiShipments.map((shipment: Shipment) => {
+            const normalizedStatus =
+              shipment.status === "in_transit" ||
+              shipment.status === "customs" ||
+              shipment.status === "delivered"
+                ? shipment.status
+                : "preparing";
+
+            return {
+              id: shipment.id,
+              date: shipment.createdAt?.slice(0, 10) ?? new Date().toISOString().slice(0, 10),
+              origin: shipment.origin,
+              destination: shipment.destination,
+              status: normalizedStatus,
+              statusLabel:
+                normalizedStatus === "in_transit"
+                  ? "En transit"
+                  : normalizedStatus === "customs"
+                    ? "En douane"
+                    : normalizedStatus === "delivered"
+                      ? "Livre"
+                      : "Preparation",
+              progress: shipment.progress ?? 0,
+              currentLocation: shipment.currentLocation ?? "N/A",
+              estimatedDelivery: shipment.estimatedDelivery ?? "-",
+              weight: "N/A",
+              trackingEvents: 0,
+            };
+          }),
+        );
+      } catch (error) {
+        setApiError(
+          error instanceof Error
+            ? error.message
+            : "Erreur lors du chargement des expeditions.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void loadShipments();
+  }, []);
 
   const filteredShipments = shipments.filter((shipment) => {
     const matchesSearch =
@@ -96,6 +149,12 @@ export function Shipments() {
       </div>
 
       {/* Stats */}
+      {apiError && (
+        <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+          {apiError} Affichage des donnees de demonstration.
+        </div>
+      )}
+
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {Object.entries(statusConfig).map(([key, config]) => {
           const count = shipments.filter((s) => s.status === key).length;
@@ -144,7 +203,11 @@ export function Shipments() {
 
       {/* Shipments List */}
       <div className="space-y-4">
-        {filteredShipments.length === 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
+            <p className="text-gray-500">Chargement des expeditions...</p>
+          </div>
+        ) : filteredShipments.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
             <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">Aucune expédition trouvée</p>

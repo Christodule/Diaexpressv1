@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Package, MapPin, Calendar, User, Phone, Mail, CreditCard, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 import logo from "figma:asset/a8b949375d4d4bd5959a538d6dad3247b1409ed4.png";
+import { createReservation } from "../lib/api";
 
 export function PublicReservation() {
   const [step, setStep] = useState(1);
@@ -17,6 +18,11 @@ export function PublicReservation() {
     recipientPhone: "",
     paymentMethod: "card",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const handleNext = () => {
     if (step < 3) setStep(step + 1);
@@ -26,9 +32,34 @@ export function PublicReservation() {
     if (step > 1) setStep(step - 1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Reservation submitted:", formData);
+    setIsSubmitting(true);
+    setRequestStatus(null);
+    try {
+      await createReservation({
+        origin: formData.origin,
+        destination: formData.destination,
+        weightKg: Number(formData.weight || 0),
+        pickupDate: formData.pickupDate,
+        senderName: formData.senderName,
+        recipientName: formData.recipientName,
+      });
+      setRequestStatus({
+        type: "success",
+        message: "Reservation envoyee. Un conseiller vous contactera rapidement.",
+      });
+    } catch (error) {
+      setRequestStatus({
+        type: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Impossible de finaliser la reservation pour le moment.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -93,6 +124,18 @@ export function PublicReservation() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8">
+            {requestStatus && (
+              <div
+                className={`mb-6 rounded-lg border px-4 py-3 text-sm ${
+                  requestStatus.type === "success"
+                    ? "border-green-200 bg-green-50 text-green-700"
+                    : "border-red-200 bg-red-50 text-red-700"
+                }`}
+              >
+                {requestStatus.message}
+              </div>
+            )}
+
             {/* Step 1: Route */}
             {step === 1 && (
               <div className="space-y-6">
@@ -354,10 +397,11 @@ export function PublicReservation() {
               ) : (
                 <button
                   type="submit"
-                  className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                  disabled={isSubmitting}
+                  className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   <CreditCard className="w-5 h-5" />
-                  Confirmer et payer
+                  {isSubmitting ? "Confirmation..." : "Confirmer et payer"}
                 </button>
               )}
             </div>

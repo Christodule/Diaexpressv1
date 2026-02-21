@@ -60,8 +60,8 @@ export function NotFound() {
             <Link to="/shipments" className="text-[#f1580c] hover:underline">
               Mes expéditions
             </Link>
-            <Link to="/contact" className="text-[#f1580c] hover:underline">
-              Contact
+            <Link to="/public-dashboard/reservation" className="text-[#f1580c] hover:underline">
+              Reservation publique
             </Link>
           </div>
         </div>

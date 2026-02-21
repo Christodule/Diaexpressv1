@@ -1,5 +1,6 @@
 import { Search } from 'lucide-react';
 import logo from 'figma:asset/a8b949375d4d4bd5959a538d6dad3247b1409ed4.png';
+import { Link } from "react-router";
 
 export function Header() {
   return (
@@ -10,7 +11,9 @@ export function Header() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center">
-              <img src={logo} alt="DIAEXPRESS" className="h-10 w-auto sm:h-12" />
+              <Link to="/">
+                <img src={logo} alt="DIAEXPRESS" className="h-10 w-auto sm:h-12" />
+              </Link>
             </div>
 
             {/* Navigation - Hidden on mobile */}
@@ -21,7 +24,12 @@ export function Header() {
               </a>
               <a href="#services" className="text-[#f4fee8] hover:text-white transition-colors">Services</a>
               <a href="#contact" className="text-[#f4fee8] hover:text-white transition-colors">Contact</a>
-              <a href="#about" className="text-[#f4fee8] hover:text-white transition-colors">A Propos</a>
+              <Link to="/public-dashboard/reservation" className="text-[#f4fee8] hover:text-white transition-colors">
+                Reservation
+              </Link>
+              <Link to="/dashboard" className="text-[#f4fee8] hover:text-white transition-colors">
+                Espace client
+              </Link>
             </nav>
 
             {/* Search & CTA */}
@@ -30,12 +38,15 @@ export function Header() {
                 <Search className="w-5 h-5" />
                 <span className="hidden lg:inline">recherche</span>
               </button>
-              <button className="bg-[#f1580c] hover:bg-[#d14a0a] text-[#f4fee8] px-4 py-2 rounded-lg transition-colors flex items-center gap-2">
+              <Link
+                to="/quote-request"
+                className="bg-[#f1580c] hover:bg-[#d14a0a] text-[#f4fee8] px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+              >
                 <span className="text-sm sm:text-base">Obtenez un devis</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -45,9 +56,9 @@ export function Header() {
       <div className="md:hidden bg-[#1a1a2e] px-4 py-3">
         <nav className="flex justify-center gap-6 text-sm">
           <a href="#tracking" className="text-[#f4fee8]">Suivi</a>
-          <a href="#services" className="text-[#f4fee8]">Services</a>
-          <a href="#contact" className="text-[#f4fee8]">Contact</a>
-          <a href="#about" className="text-[#f4fee8]">A Propos</a>
+          <Link to="/quote-request" className="text-[#f4fee8]">Devis</Link>
+          <Link to="/public-dashboard/reservation" className="text-[#f4fee8]">Reservation</Link>
+          <Link to="/dashboard" className="text-[#f4fee8]">Client</Link>
         </nav>
       </div>
     </header>

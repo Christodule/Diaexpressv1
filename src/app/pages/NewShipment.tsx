@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router";
 import { ArrowLeft, Package, User, MapPin, Phone, Mail, Calendar, CreditCard } from "lucide-react";
 import { useState } from "react";
+import { createShipment } from "../lib/api";
 
 export function NewShipment() {
   const { quoteId } = useParams();
@@ -17,10 +18,43 @@ export function NewShipment() {
     specialInstructions: "",
     paymentMethod: "card",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("New shipment:", formData);
+    setIsSubmitting(true);
+    setStatusMessage(null);
+
+    try {
+      await createShipment({
+        quoteId: quoteId ?? "unknown-quote",
+        origin: "Dakar, SN",
+        destination: "Lyon, FR",
+        status: "preparing",
+        progress: 5,
+        trackingNumber: `TRK-${Date.now()}`,
+        currentLocation: formData.senderAddress || "Hub depart",
+        estimatedDelivery: formData.pickupDate || new Date().toISOString().slice(0, 10),
+      });
+      setStatusMessage({
+        type: "success",
+        text: "Expedition creee avec succes. Elle apparaitra dans vos expeditions.",
+      });
+    } catch (error) {
+      setStatusMessage({
+        type: "error",
+        text:
+          error instanceof Error
+            ? error.message
+            : "La creation de l'expedition a echoue.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,6 +94,18 @@ export function NewShipment() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {statusMessage && (
+          <div
+            className={`rounded-lg border px-4 py-3 text-sm ${
+              statusMessage.type === "success"
+                ? "border-green-200 bg-green-50 text-green-700"
+                : "border-red-200 bg-red-50 text-red-700"
+            }`}
+          >
+            {statusMessage.text}
+          </div>
+        )}
+
         {/* Sender Information */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
@@ -278,10 +324,11 @@ export function NewShipment() {
           </Link>
           <button
             type="submit"
-            className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+            disabled={isSubmitting}
+            className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             <Package className="w-5 h-5" />
-            Créer l'expédition
+            {isSubmitting ? "Creation..." : "Creer l'expedition"}
           </button>
         </div>
       </form>
