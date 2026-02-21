@@ -1,31 +1,29 @@
 import { Package, Ship, Plane, Truck } from 'lucide-react';
-import serviceIcon1 from "figma:asset/6dee5bfe97939a456031d98a44088291c8885a41.png";
-import serviceIcon2 from "figma:asset/2051b322f3f74d3f73f9d5e7d7cee558d3447203.png";
 
 const services = [
   {
     icon: Ship,
     title: "Maritime",
     time: "15mn à 1h",
-    image: serviceIcon1,
+    color: "from-[#6fccd4] to-[#5ab8c0]",
   },
   {
     icon: Plane,
     title: "Aérien",
     time: "15mn à 1h",
-    image: serviceIcon1,
+    color: "from-[#f1580c] to-[#d14a0a]",
   },
   {
     icon: Truck,
     title: "Routier",
     time: "15mn à 1h",
-    image: serviceIcon2,
+    color: "from-[#ffb629] to-[#f59e0b]",
   },
   {
     icon: Package,
     title: "Express",
     time: "15mn à 1h",
-    image: serviceIcon1,
+    color: "from-[#1a1a2e] to-[#273469]",
   },
 ];
 
@@ -43,16 +41,10 @@ export function ServicesIcons() {
               >
                 {/* Icon Circle */}
                 <div className="relative mb-4">
-                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow">
-                    <img 
-                      src={service.image} 
-                      alt={service.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  {/* Icon Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="bg-white/80 rounded-full p-4 group-hover:bg-[#6fccd4]/80 transition-colors">
+                  <div
+                    className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full shadow-lg group-hover:shadow-xl transition-shadow bg-gradient-to-br ${service.color} flex items-center justify-center`}
+                  >
+                    <div className="bg-white/90 rounded-full p-4 group-hover:bg-white transition-colors">
                       <IconComponent className="w-8 h-8 text-[#1a1a2e]" />
                     </div>
                   </div>

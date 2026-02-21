@@ -1,5 +1,5 @@
 import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
-import logo from 'figma:asset/a8b949375d4d4bd5959a538d6dad3247b1409ed4.png';
+import logo from '../assets/diaexpress-logo.svg';
 
 export function Footer() {
   return (

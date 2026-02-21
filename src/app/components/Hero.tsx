@@ -1,17 +1,12 @@
-import heroImage from "figma:asset/fecfec959c9da274c13eeb8681fe54b680ad65c8.png";
 import { Link } from "react-router";
 
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-32">
       {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src={heroImage} 
-          alt="Shipping containers" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/30"></div>
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_left,_#6fccd4_0%,_#1a1a2e_45%,_#0f172a_100%)]">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/45 to-black/20"></div>
+        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,_transparent_0%,_transparent_45%,_#ffffff_45%,_#ffffff_46%,_transparent_46%,_transparent_100%)]"></div>
       </div>
 
       {/* Content */}

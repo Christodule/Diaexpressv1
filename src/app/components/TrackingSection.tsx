@@ -1,15 +1,9 @@
-import trackingBg from "figma:asset/215c1d667261777fcb5cabc471b852fed7d42947.png";
-
 export function TrackingSection() {
   return (
     <section id="tracking" className="relative py-16 md:py-24">
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#FFB629] via-[#FFDA56] to-[#FFD7A6]">
-        <img 
-          src={trackingBg} 
-          alt="Background" 
-          className="w-full h-full object-cover mix-blend-overlay opacity-20"
-        />
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_#1a1a2e_0%,_transparent_65%)]"></div>
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

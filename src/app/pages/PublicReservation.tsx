@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Package, MapPin, Calendar, User, Phone, Mail, CreditCard, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
-import logo from "figma:asset/a8b949375d4d4bd5959a538d6dad3247b1409ed4.png";
+import logo from "../assets/diaexpress-logo.svg";
 import { createReservation } from "../lib/api";
 
 export function PublicReservation() {

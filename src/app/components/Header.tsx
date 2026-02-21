@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react';
-import logo from 'figma:asset/a8b949375d4d4bd5959a538d6dad3247b1409ed4.png';
+import logo from '../assets/diaexpress-logo.svg';
 import { Link } from "react-router";
 
 export function Header() {

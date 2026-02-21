@@ -16,7 +16,7 @@ import {
   Home,
 } from "lucide-react";
 import { useState } from "react";
-import logo from "figma:asset/a8b949375d4d4bd5959a538d6dad3247b1409ed4.png";
+import logo from "../assets/diaexpress-logo.svg";
 
 const navigation = [
   { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
