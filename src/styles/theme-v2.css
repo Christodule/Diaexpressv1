@@ -1,0 +1,49 @@
+:root {
+  --dx-primary: #f1580c;
+  --dx-primary-dark: #d14a0a;
+  --dx-secondary: #6fccd4;
+  --dx-accent: #ffb629;
+  --dx-bg: #f4fee8;
+  --dx-text: #1a1a2e;
+  --dx-muted: #5a6178;
+  --dx-surface: #ffffff;
+  --dx-surface-soft: #f8fbff;
+}
+
+@layer components {
+  .dx-page {
+    @apply min-h-screen bg-[var(--dx-bg)] text-[var(--dx-text)];
+  }
+
+  .dx-surface {
+    @apply rounded-2xl border border-slate-200/70 bg-[var(--dx-surface)] shadow-sm;
+  }
+
+  .dx-surface-soft {
+    @apply rounded-2xl border border-slate-200/70 bg-[var(--dx-surface-soft)] shadow-sm;
+  }
+
+  .dx-title {
+    @apply text-3xl font-bold tracking-tight text-[var(--dx-text)];
+  }
+
+  .dx-subtitle {
+    @apply mt-2 text-sm text-[var(--dx-muted)];
+  }
+
+  .dx-pill {
+    @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold;
+  }
+
+  .dx-input {
+    @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[var(--dx-secondary)] focus:ring-2 focus:ring-[var(--dx-secondary)]/25;
+  }
+
+  .dx-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--dx-primary)] px-5 py-3 font-semibold text-white transition hover:bg-[var(--dx-primary-dark)] disabled:cursor-not-allowed disabled:opacity-70;
+  }
+
+  .dx-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-50;
+  }
+}

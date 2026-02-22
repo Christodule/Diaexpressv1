@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FileText, Search, Filter, Eye, CheckCircle, XCircle, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router";
 import { fetchQuotes, type Quote } from "../lib/api";
+import { PageHeader, StatCard, StatusBadge, SurfaceCard } from "../components/ui-v2";
 
 const fallbackQuotes = [
   {
@@ -113,20 +114,16 @@ export function Quotes() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mes devis</h1>
-          <p className="mt-2 text-gray-600">Gérez vos demandes de devis et leurs statuts</p>
-        </div>
-        <Link
-          to="/quote-request"
-          className="px-6 py-3 bg-[#f1580c] hover:bg-[#d14a0a] text-white font-bold rounded-lg transition-colors flex items-center gap-2"
-        >
-          <FileText className="w-5 h-5" />
-          Nouveau devis
-        </Link>
-      </div>
+      <PageHeader
+        title="Mes devis"
+        subtitle="Gerez vos demandes de devis et suivez leur statut en un clin d'oeil."
+        action={
+          <Link to="/quote-request" className="dx-btn-primary">
+            <FileText className="h-4 w-4" />
+            Nouveau devis
+          </Link>
+        }
+      />
 
       {/* Stats */}
       {apiError && (
@@ -135,50 +132,44 @@ export function Quotes() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <p className="text-sm text-gray-600">Total</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{quotes.length}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-yellow-100 p-4">
-          <p className="text-sm text-yellow-600">En attente</p>
-          <p className="text-2xl font-bold text-yellow-700 mt-1">
-            {quotes.filter((q) => q.status === "pending").length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-green-100 p-4">
-          <p className="text-sm text-green-600">Approuvés</p>
-          <p className="text-2xl font-bold text-green-700 mt-1">
-            {quotes.filter((q) => q.status === "approved").length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <p className="text-sm text-gray-600">Refusés/Expirés</p>
-          <p className="text-2xl font-bold text-gray-700 mt-1">
-            {quotes.filter((q) => q.status === "rejected" || q.status === "expired").length}
-          </p>
-        </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard label="Total" value={quotes.length} />
+        <StatCard
+          label="En attente"
+          value={quotes.filter((q) => q.status === "pending").length}
+          tone="warning"
+        />
+        <StatCard
+          label="Approuves"
+          value={quotes.filter((q) => q.status === "approved").length}
+          tone="success"
+        />
+        <StatCard
+          label="Refuses / Expires"
+          value={quotes.filter((q) => q.status === "rejected" || q.status === "expired").length}
+          tone="default"
+        />
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <SurfaceCard className="p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
             <input
               type="text"
               placeholder="Rechercher par numéro, origine ou destination..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+              className="dx-input pl-10"
             />
           </div>
           <div className="relative">
-            <Filter className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+            <Filter className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4] appearance-none bg-white"
+              className="dx-input appearance-none pl-10 pr-10"
             >
               <option value="all">Tous les statuts</option>
               <option value="pending">En attente</option>
@@ -188,81 +179,89 @@ export function Quotes() {
             </select>
           </div>
         </div>
-      </div>
+      </SurfaceCard>
 
       {/* Quotes List */}
       <div className="space-y-4">
         {loading ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-            <p className="text-gray-500">Chargement des devis...</p>
-          </div>
+          <SurfaceCard className="p-12 text-center">
+            <p className="text-slate-500">Chargement des devis...</p>
+          </SurfaceCard>
         ) : filteredQuotes.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-            <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">Aucun devis trouvé</p>
-          </div>
+          <SurfaceCard className="p-12 text-center">
+            <FileText className="mx-auto mb-4 h-16 w-16 text-slate-300" />
+            <p className="text-slate-500">Aucun devis trouve</p>
+          </SurfaceCard>
         ) : (
           filteredQuotes.map((quote) => {
-            const StatusIcon = statusConfig[quote.status as keyof typeof statusConfig].icon;
+            const status = statusConfig[quote.status as keyof typeof statusConfig] ?? statusConfig.expired;
+            const StatusIcon = status.icon;
+            const tone =
+              quote.status === "approved"
+                ? "success"
+                : quote.status === "pending"
+                  ? "warning"
+                  : quote.status === "rejected"
+                    ? "danger"
+                    : "neutral";
             return (
-              <div
-                key={quote.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
-              >
+              <SurfaceCard key={quote.id} className="p-6 transition hover:shadow-md">
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900">{quote.id}</h3>
-                        <p className="text-sm text-gray-500 mt-1">Demandé le {quote.date}</p>
+                        <h3 className="text-lg font-bold text-slate-900">{quote.id}</h3>
+                        <p className="mt-1 text-sm text-slate-500">Demande le {quote.date}</p>
                       </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium border flex items-center gap-1 ${
-                          statusConfig[quote.status as keyof typeof statusConfig].color
-                        }`}
-                      >
-                        <StatusIcon className="w-3 h-3" />
-                        {quote.statusLabel}
-                      </span>
+                      <StatusBadge
+                        tone={tone}
+                        className="gap-1"
+                        label={
+                          <>
+                            <StatusIcon className="h-3 w-3" />
+                            {quote.statusLabel}
+                          </>
+                        }
+                      />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Itinéraire</p>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="mb-1 text-xs text-slate-500">Itineraire</p>
+                        <p className="text-sm font-medium text-slate-900">
                           {quote.origin} → {quote.destination}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Poids</p>
-                        <p className="text-sm font-medium text-gray-900">{quote.weight}</p>
+                        <p className="mb-1 text-xs text-slate-500">Poids</p>
+                        <p className="text-sm font-medium text-slate-900">{quote.weight}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Montant</p>
+                        <p className="mb-1 text-xs text-slate-500">Montant</p>
                         <p className="text-lg font-bold text-[#f1580c]">{quote.amount}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Valide jusqu'au</p>
-                        <p className="text-sm font-medium text-gray-900">{quote.validUntil}</p>
+                        <p className="mb-1 text-xs text-slate-500">Valide jusqu'au</p>
+                        <p className="text-sm font-medium text-slate-900">{quote.validUntil}</p>
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col gap-2 lg:w-48">
-                    <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                    <button className="dx-btn-secondary">
                       <Eye className="w-4 h-4" />
-                      Détails
+                      Details
                     </button>
                     {quote.status === "approved" && (
                       <Link
                         to={`/new-shipment/${quote.id}`}
-                        className="px-4 py-2 bg-[#6fccd4] hover:bg-[#5ab8c0] text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#6fccd4] px-4 py-2 font-semibold text-white transition hover:bg-[#5ab8c0]"
                       >
                         <ArrowRight className="w-4 h-4" />
-                        Créer expédition
+                        Creer expedition
                       </Link>
                     )}
                   </div>
                 </div>
-              </div>
+              </SurfaceCard>
             );
           })
         )}

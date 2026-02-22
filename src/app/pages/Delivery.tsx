@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Truck, Search, Filter, Calendar, MapPin, Phone, CheckCircle, Clock } from "lucide-react";
+import { PageHeader, StatCard, StatusBadge, SurfaceCard } from "../components/ui-v2";
 
 const deliveries = [
   {
@@ -64,62 +65,49 @@ export function Delivery() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Livraisons</h1>
-        <p className="mt-2 text-gray-600">Gérez et suivez toutes vos livraisons</p>
-      </div>
+      <PageHeader
+        title="Livraisons"
+        subtitle="Planification, execution et preuve de livraison au meme endroit."
+      />
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-blue-100 p-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Clock className="w-6 h-6 text-blue-600" />
-            <p className="text-sm text-blue-600 font-medium">Planifiées</p>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">
-            {deliveries.filter((d) => d.status === "scheduled").length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-yellow-100 p-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Truck className="w-6 h-6 text-yellow-600" />
-            <p className="text-sm text-yellow-600 font-medium">En route</p>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">
-            {deliveries.filter((d) => d.status === "in_transit").length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-green-100 p-6">
-          <div className="flex items-center gap-3 mb-2">
-            <CheckCircle className="w-6 h-6 text-green-600" />
-            <p className="text-sm text-green-600 font-medium">Livrées</p>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">
-            {deliveries.filter((d) => d.status === "delivered").length}
-          </p>
-        </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatCard
+          label="Planifiees"
+          value={deliveries.filter((d) => d.status === "scheduled").length}
+          tone="secondary"
+        />
+        <StatCard
+          label="En route"
+          value={deliveries.filter((d) => d.status === "in_transit").length}
+          tone="warning"
+        />
+        <StatCard
+          label="Livrees"
+          value={deliveries.filter((d) => d.status === "delivered").length}
+          tone="success"
+        />
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <SurfaceCard className="p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
             <input
               type="text"
               placeholder="Rechercher par numéro, destinataire ou adresse..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+              className="dx-input pl-10"
             />
           </div>
           <div className="relative">
-            <Filter className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+            <Filter className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4] appearance-none bg-white min-w-[200px]"
+              className="dx-input min-w-[200px] appearance-none pl-10 pr-10"
             >
               <option value="all">Tous les statuts</option>
               <option value="scheduled">Planifiées</option>
@@ -128,79 +116,84 @@ export function Delivery() {
             </select>
           </div>
         </div>
-      </div>
+      </SurfaceCard>
 
       {/* Deliveries List */}
       <div className="space-y-4">
         {filteredDeliveries.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-            <Truck className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">Aucune livraison trouvée</p>
-          </div>
+          <SurfaceCard className="p-12 text-center">
+            <Truck className="mx-auto mb-4 h-16 w-16 text-slate-300" />
+            <p className="text-slate-500">Aucune livraison trouvee</p>
+          </SurfaceCard>
         ) : (
           filteredDeliveries.map((delivery) => {
             const StatusIcon = statusConfig[delivery.status as keyof typeof statusConfig].icon;
+            const tone =
+              delivery.status === "delivered"
+                ? "success"
+                : delivery.status === "in_transit"
+                  ? "warning"
+                  : "info";
             return (
-              <div
-                key={delivery.id}
-                className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
-              >
+              <SurfaceCard key={delivery.id} className="p-6 transition hover:shadow-md">
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                   <div className="flex-1 space-y-4">
                     {/* Header */}
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900">{delivery.id}</h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Expédition: {delivery.shipmentId}
+                        <h3 className="text-lg font-bold text-slate-900">{delivery.id}</h3>
+                        <p className="mt-1 text-sm text-slate-500">
+                          Expedition: {delivery.shipmentId}
                         </p>
                       </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium border flex items-center gap-1 ${
-                          statusConfig[delivery.status as keyof typeof statusConfig].color
-                        }`}
-                      >
-                        <StatusIcon className="w-3 h-3" />
-                        {delivery.statusLabel}
-                      </span>
+                      <StatusBadge
+                        tone={tone}
+                        className="gap-1"
+                        label={
+                          <>
+                            <StatusIcon className="h-3 w-3" />
+                            {delivery.statusLabel}
+                          </>
+                        }
+                      />
                     </div>
 
                     {/* Recipient Details */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="grid grid-cols-1 gap-4 rounded-xl bg-slate-50 p-4 md:grid-cols-2">
                       <div>
-                        <p className="text-xs text-gray-500 mb-1">Destinataire</p>
-                        <p className="font-medium text-gray-900">{delivery.recipient}</p>
+                        <p className="mb-1 text-xs text-slate-500">Destinataire</p>
+                        <p className="font-medium text-slate-900">{delivery.recipient}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                        <p className="mb-1 flex items-center gap-1 text-xs text-slate-500">
                           <Phone className="w-3 h-3" />
                           Téléphone
                         </p>
-                        <p className="font-medium text-gray-900">{delivery.phone}</p>
+                        <p className="font-medium text-slate-900">{delivery.phone}</p>
                       </div>
                       <div className="md:col-span-2">
-                        <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                        <p className="mb-1 flex items-center gap-1 text-xs text-slate-500">
                           <MapPin className="w-3 h-3" />
                           Adresse de livraison
                         </p>
-                        <p className="font-medium text-gray-900">{delivery.address}</p>
+                        <p className="font-medium text-slate-900">{delivery.address}</p>
                       </div>
                     </div>
 
                     {/* Delivery Info */}
                     <div className="flex flex-wrap gap-6 text-sm">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <Calendar className="h-4 w-4 text-slate-400" />
                         <div>
-                          <p className="text-gray-500">Date de livraison</p>
-                          <p className="font-medium text-gray-900">{delivery.deliveryDate}</p>
+                          <p className="text-slate-500">Date de livraison</p>
+                          <p className="font-medium text-slate-900">{delivery.deliveryDate}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-gray-400" />
+                        <Clock className="h-4 w-4 text-slate-400" />
                         <div>
-                          <p className="text-gray-500">Créneau horaire</p>
-                          <p className="font-medium text-gray-900">{delivery.deliveryTime}</p>
+                          <p className="text-slate-500">Creneau horaire</p>
+                          <p className="font-medium text-slate-900">{delivery.deliveryTime}</p>
                         </div>
                       </div>
                       {delivery.signature && (
@@ -215,7 +208,7 @@ export function Delivery() {
 
                     {/* Notes */}
                     {delivery.notes && (
-                      <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg">
+                      <div className="rounded-xl border border-blue-100 bg-blue-50 p-3">
                         <p className="text-sm text-blue-900">
                           <strong>Note:</strong> {delivery.notes}
                         </p>
@@ -225,17 +218,17 @@ export function Delivery() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-2 lg:w-48">
-                    <button className="px-4 py-2 bg-[#6fccd4] hover:bg-[#5ab8c0] text-white rounded-lg transition-colors">
-                      Voir détails
+                    <button className="inline-flex items-center justify-center rounded-xl bg-[#6fccd4] px-4 py-2 font-semibold text-white transition hover:bg-[#5ab8c0]">
+                      Voir details
                     </button>
                     {delivery.status === "delivered" && (
-                      <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                      <button className="dx-btn-secondary">
                         Preuve de livraison
                       </button>
                     )}
                   </div>
                 </div>
-              </div>
+              </SurfaceCard>
             );
           })
         )}

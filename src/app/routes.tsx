@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import { Home } from "./pages/Home";
-import { DashboardLayout } from "./layouts/DashboardLayout";
+import { ClientV2Layout } from "./layouts/ClientV2Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { QuoteRequest } from "./pages/QuoteRequest";
 import { Quotes } from "./pages/Quotes";
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    Component: DashboardLayout,
+    Component: ClientV2Layout,
     children: [
       { path: "dashboard", Component: Dashboard },
       { path: "quote-request", Component: QuoteRequest },

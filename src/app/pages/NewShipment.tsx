@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router";
 import { ArrowLeft, Package, User, MapPin, Phone, Mail, Calendar, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { createShipment } from "../lib/api";
+import { PageHeader, SurfaceCard } from "../components/ui-v2";
 
 export function NewShipment() {
   const { quoteId } = useParams();
@@ -58,24 +59,24 @@ export function NewShipment() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="mx-auto max-w-5xl space-y-8">
       {/* Header */}
       <div>
         <Link
           to="/quotes"
-          className="inline-flex items-center gap-2 text-[#f1580c] hover:underline mb-4"
+          className="mb-4 inline-flex items-center gap-2 text-[#f1580c] hover:underline"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour aux devis
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Nouvelle expédition</h1>
-        <p className="mt-2 text-gray-600">
-          Création d'une expédition à partir du devis <strong>{quoteId}</strong>
-        </p>
+        <PageHeader
+          title="Nouvelle expedition"
+          subtitle={`Conversion du devis ${quoteId ?? "-"} en expedition operationnelle.`}
+        />
       </div>
 
       {/* Quote Summary */}
-      <div className="bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0] rounded-xl p-6 text-white">
+      <div className="rounded-2xl bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0] p-6 text-white">
         <h2 className="text-xl font-bold mb-4">Résumé du devis</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -107,14 +108,14 @@ export function NewShipment() {
         )}
 
         {/* Sender Information */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <SurfaceCard className="p-6">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
             <User className="w-5 h-5 text-[#f1580c]" />
-            Informations expéditeur
+            Informations expediteur
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Nom complet *
               </label>
               <input
@@ -122,11 +123,11 @@ export function NewShipment() {
                 required
                 value={formData.senderName}
                 onChange={(e) => setFormData({ ...formData, senderName: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Phone className="w-4 h-4" />
                 Téléphone *
               </label>
@@ -135,11 +136,11 @@ export function NewShipment() {
                 required
                 value={formData.senderPhone}
                 onChange={(e) => setFormData({ ...formData, senderPhone: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Mail className="w-4 h-4" />
                 Email *
               </label>
@@ -148,11 +149,11 @@ export function NewShipment() {
                 required
                 value={formData.senderEmail}
                 onChange={(e) => setFormData({ ...formData, senderEmail: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <MapPin className="w-4 h-4" />
                 Adresse complète *
               </label>
@@ -161,21 +162,21 @@ export function NewShipment() {
                 required
                 value={formData.senderAddress}
                 onChange={(e) => setFormData({ ...formData, senderAddress: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
           </div>
-        </div>
+        </SurfaceCard>
 
         {/* Recipient Information */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <SurfaceCard className="p-6">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
             <User className="w-5 h-5 text-[#f1580c]" />
             Informations destinataire
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Nom complet *
               </label>
               <input
@@ -183,11 +184,11 @@ export function NewShipment() {
                 required
                 value={formData.recipientName}
                 onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Phone className="w-4 h-4" />
                 Téléphone *
               </label>
@@ -196,11 +197,11 @@ export function NewShipment() {
                 required
                 value={formData.recipientPhone}
                 onChange={(e) => setFormData({ ...formData, recipientPhone: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Mail className="w-4 h-4" />
                 Email *
               </label>
@@ -209,11 +210,11 @@ export function NewShipment() {
                 required
                 value={formData.recipientEmail}
                 onChange={(e) => setFormData({ ...formData, recipientEmail: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <MapPin className="w-4 h-4" />
                 Adresse complète *
               </label>
@@ -222,33 +223,33 @@ export function NewShipment() {
                 required
                 value={formData.recipientAddress}
                 onChange={(e) => setFormData({ ...formData, recipientAddress: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
           </div>
-        </div>
+        </SurfaceCard>
 
         {/* Pickup & Delivery */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <SurfaceCard className="p-6">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
             <Calendar className="w-5 h-5 text-[#f1580c]" />
-            Enlèvement et livraison
+            Enlevement et livraison
           </h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date d'enlèvement souhaitée *
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Date d'enlevement souhaitee *
               </label>
               <input
                 type="date"
                 required
                 value={formData.pickupDate}
                 onChange={(e) => setFormData({ ...formData, pickupDate: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Instructions spéciales
               </label>
               <textarea
@@ -256,20 +257,20 @@ export function NewShipment() {
                 value={formData.specialInstructions}
                 onChange={(e) => setFormData({ ...formData, specialInstructions: e.target.value })}
                 placeholder="Précisez toute information importante pour la collecte ou la livraison..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4] resize-none"
+                className="dx-input resize-none"
               ></textarea>
             </div>
           </div>
-        </div>
+        </SurfaceCard>
 
         {/* Payment Method */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <SurfaceCard className="p-6">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
             <CreditCard className="w-5 h-5 text-[#f1580c]" />
             Mode de paiement
           </h2>
           <div className="space-y-3">
-            <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-slate-200 p-4 transition-colors hover:border-[#6fccd4]">
               <input
                 type="radio"
                 name="payment"
@@ -283,7 +284,7 @@ export function NewShipment() {
                 <p className="text-sm text-gray-500">Paiement sécurisé par carte</p>
               </div>
             </label>
-            <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-slate-200 p-4 transition-colors hover:border-[#6fccd4]">
               <input
                 type="radio"
                 name="payment"
@@ -297,7 +298,7 @@ export function NewShipment() {
                 <p className="text-sm text-gray-500">Orange Money, MTN, Moov</p>
               </div>
             </label>
-            <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-slate-200 p-4 transition-colors hover:border-[#6fccd4]">
               <input
                 type="radio"
                 name="payment"
@@ -312,20 +313,20 @@ export function NewShipment() {
               </div>
             </label>
           </div>
-        </div>
+        </SurfaceCard>
 
         {/* Submit Buttons */}
         <div className="flex gap-4">
           <Link
             to="/quotes"
-            className="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors text-center"
+            className="dx-btn-secondary flex-1"
           >
             Annuler
           </Link>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="dx-btn-primary flex-1"
           >
             <Package className="w-5 h-5" />
             {isSubmitting ? "Creation..." : "Creer l'expedition"}

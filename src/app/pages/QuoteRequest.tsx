@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Package, MapPin, Calendar, Weight, Ruler, FileText, Send } from "lucide-react";
 import { createQuoteRequest, estimatePricing } from "../lib/api";
+import { PageHeader, SurfaceCard } from "../components/ui-v2";
 
 export function QuoteRequest() {
   const [formData, setFormData] = useState({
@@ -68,12 +69,11 @@ export function QuoteRequest() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Demande de devis</h1>
-        <p className="mt-2 text-gray-600">Remplissez le formulaire pour obtenir un devis personnalisé</p>
-      </div>
+    <div className="mx-auto max-w-5xl space-y-8">
+      <PageHeader
+        title="Demande de devis"
+        subtitle="Renseignez les informations d'expedition pour recevoir une proposition tarifaire."
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {requestStatus && (
@@ -89,15 +89,15 @@ export function QuoteRequest() {
         )}
 
         {/* Origin & Destination */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <SurfaceCard className="p-6">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
             <MapPin className="w-5 h-5 text-[#f1580c]" />
-            Itinéraire
+            Itineraire
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ville de départ *
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Ville de depart *
               </label>
               <input
                 type="text"
@@ -105,12 +105,12 @@ export function QuoteRequest() {
                 value={formData.origin}
                 onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
                 placeholder="Ex: Abidjan, Côte d'Ivoire"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ville d'arrivée *
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Ville d'arrivee *
               </label>
               <input
                 type="text"
@@ -118,39 +118,39 @@ export function QuoteRequest() {
                 value={formData.destination}
                 onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
                 placeholder="Ex: Paris, France"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
           </div>
-        </div>
+        </SurfaceCard>
 
         {/* Package Details */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+        <SurfaceCard className="p-6">
+          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
             <Package className="w-5 h-5 text-[#f1580c]" />
-            Détails du colis
+            Details du colis
           </h2>
           
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date de collecte souhaitée *
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Date de collecte souhaitee *
                 </label>
                 <div className="relative">
-                  <Calendar className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+                  <Calendar className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
                   <input
                     type="date"
                     required
                     value={formData.pickupDate}
                     onChange={(e) => setFormData({ ...formData, pickupDate: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                    className="dx-input pl-10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-slate-700">
                   Type de colis *
                 </label>
                 <select
@@ -159,7 +159,7 @@ export function QuoteRequest() {
                     setFormData({ ...formData, packageType: e.target.value })
                   }
                   onBlur={fetchEstimate}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                  className="dx-input"
                 >
                   <option value="standard">Standard</option>
                   <option value="express">Express</option>
@@ -171,7 +171,7 @@ export function QuoteRequest() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Weight className="w-4 h-4" />
                 Poids (kg) *
               </label>
@@ -184,19 +184,19 @@ export function QuoteRequest() {
                 onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
                 onBlur={fetchEstimate}
                 placeholder="Ex: 25.5"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                className="dx-input"
               />
             </div>
 
-            <div className="rounded-lg border border-[#6fccd4]/30 bg-[#6fccd4]/10 p-4">
-              <p className="text-xs text-gray-600">Estimation transport</p>
+            <div className="rounded-xl border border-cyan-200 bg-cyan-50 p-4">
+              <p className="text-xs text-slate-600">Estimation transport</p>
               <p className="mt-1 text-xl font-bold text-[#f1580c]">
                 {(estimatedPrice ?? numericWeight * 1500).toLocaleString()} FCFA
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <Ruler className="w-4 h-4" />
                 Dimensions (cm)
               </label>
@@ -212,7 +212,7 @@ export function QuoteRequest() {
                     })
                   }
                   placeholder="Longueur"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                  className="dx-input"
                 />
                 <input
                   type="number"
@@ -225,7 +225,7 @@ export function QuoteRequest() {
                     })
                   }
                   placeholder="Largeur"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                  className="dx-input"
                 />
                 <input
                   type="number"
@@ -238,13 +238,13 @@ export function QuoteRequest() {
                     })
                   }
                   placeholder="Hauteur"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                  className="dx-input"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
                 <FileText className="w-4 h-4" />
                 Description du contenu *
               </label>
@@ -254,7 +254,7 @@ export function QuoteRequest() {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Décrivez le contenu de votre colis..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4] resize-none"
+                className="dx-input resize-none"
               ></textarea>
             </div>
 
@@ -266,53 +266,53 @@ export function QuoteRequest() {
                 onChange={(e) => setFormData({ ...formData, insurance: e.target.checked })}
                 className="w-5 h-5 text-[#f1580c] border-gray-300 rounded focus:ring-[#6fccd4]"
               />
-              <label htmlFor="insurance" className="text-sm text-gray-700">
+              <label htmlFor="insurance" className="text-sm text-slate-700">
                 Je souhaite assurer mon colis (recommandé pour les envois de valeur)
               </label>
             </div>
           </div>
-        </div>
+        </SurfaceCard>
 
         {/* Additional Services */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Services additionnels</h2>
+        <SurfaceCard className="p-6">
+          <h2 className="mb-4 text-lg font-bold text-slate-900">Services additionnels</h2>
           <div className="space-y-3">
-            <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:border-cyan-300">
               <input type="checkbox" className="w-5 h-5 text-[#f1580c] border-gray-300 rounded" />
               <div>
-                <p className="font-medium text-gray-900">Livraison à domicile</p>
-                <p className="text-sm text-gray-500">Livraison directe à l'adresse du destinataire</p>
+                <p className="font-medium text-slate-900">Livraison a domicile</p>
+                <p className="text-sm text-slate-500">Livraison directe a l'adresse du destinataire</p>
               </div>
             </label>
-            <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:border-cyan-300">
               <input type="checkbox" className="w-5 h-5 text-[#f1580c] border-gray-300 rounded" />
               <div>
-                <p className="font-medium text-gray-900">Emballage professionnel</p>
-                <p className="text-sm text-gray-500">Service d'emballage sécurisé par nos experts</p>
+                <p className="font-medium text-slate-900">Emballage professionnel</p>
+                <p className="text-sm text-slate-500">Service d'emballage securise par nos experts</p>
               </div>
             </label>
-            <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:border-cyan-300">
               <input type="checkbox" className="w-5 h-5 text-[#f1580c] border-gray-300 rounded" />
               <div>
-                <p className="font-medium text-gray-900">Notification SMS</p>
-                <p className="text-sm text-gray-500">Recevez des alertes à chaque étape</p>
+                <p className="font-medium text-slate-900">Notification SMS</p>
+                <p className="text-sm text-slate-500">Recevez des alertes a chaque etape</p>
               </div>
             </label>
           </div>
-        </div>
+        </SurfaceCard>
 
         {/* Submit Button */}
         <div className="flex gap-4">
           <button
             type="button"
-            className="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors"
+            className="dx-btn-secondary flex-1"
           >
             Annuler
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="dx-btn-primary flex-1"
           >
             <Send className="w-5 h-5" />
             {isSubmitting ? "Envoi en cours..." : "Demander un devis"}

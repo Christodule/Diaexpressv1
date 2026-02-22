@@ -11,7 +11,7 @@ import { Footer } from '../components/Footer';
 
 export function Home() {
   return (
-    <div className="min-h-screen bg-[#f4fee8]">
+    <div className="dx-page">
       <Header />
       <main>
         <Hero />

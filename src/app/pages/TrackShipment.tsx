@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Search, Package, MapPin, Calendar, CheckCircle, Clock, Truck, AlertCircle, Download } from "lucide-react";
 import { fetchTrackingRecord } from "../lib/api";
+import { PageHeader, SurfaceCard, StatusBadge } from "../components/ui-v2";
 
 const fallbackTrackingData = {
   id: "TRK-2026-001",
@@ -117,35 +118,34 @@ export function TrackShipment() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Suivi de colis</h1>
-        <p className="mt-2 text-gray-600">Suivez votre expédition en temps réel</p>
-      </div>
+    <div className="mx-auto max-w-5xl space-y-8">
+      <PageHeader
+        title="Suivi de colis"
+        subtitle="Consultez l'historique de transit et l'estimation de livraison."
+      />
 
       {/* Search Box */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <SurfaceCard className="p-6">
         <form onSubmit={handleSearch} className="flex gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
             <input
               type="text"
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
               placeholder="Entrez votre numéro de suivi (ex: DXP-2024-001)"
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+              className="dx-input pl-10"
             />
           </div>
           <button
             type="submit"
             disabled={isSearching}
-            className="px-8 py-3 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors"
+            className="dx-btn-primary"
           >
             {isSearching ? "Recherche..." : "Suivre"}
           </button>
         </form>
-      </div>
+      </SurfaceCard>
 
       {apiError && (
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -156,13 +156,20 @@ export function TrackShipment() {
       {showTracking && (
         <>
           {/* Status Card */}
-          <div className="bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0] rounded-xl p-8 text-white shadow-lg">
+          <div className="rounded-2xl bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0] p-8 text-white shadow-lg">
             <div className="flex items-start justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold mb-2">{trackingData.id}</h2>
-                <p className="text-white/90">
-                  Statut: <span className="font-bold">{mappedTrackingData.statusLabel}</span>
-                </p>
+                <StatusBadge
+                  label={mappedTrackingData.statusLabel}
+                  tone={
+                    mappedTrackingData.status === "delivered"
+                      ? "success"
+                      : mappedTrackingData.status === "in_transit"
+                        ? "info"
+                        : "warning"
+                  }
+                />
               </div>
               <button className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2">
                 <Download className="w-4 h-4" />
@@ -212,27 +219,27 @@ export function TrackShipment() {
           </div>
 
           {/* Package Details */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">Détails du colis</h3>
+          <SurfaceCard className="p-6">
+            <h3 className="mb-4 text-xl font-bold text-slate-900">Details du colis</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <p className="text-sm text-gray-500 mb-1">Poids</p>
-                <p className="font-bold text-gray-900">{mappedTrackingData.weight}</p>
+                <p className="mb-1 text-sm text-slate-500">Poids</p>
+                <p className="font-bold text-slate-900">{mappedTrackingData.weight}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Transporteur</p>
-                <p className="font-bold text-gray-900">{mappedTrackingData.carrier}</p>
+                <p className="mb-1 text-sm text-slate-500">Transporteur</p>
+                <p className="font-bold text-slate-900">{mappedTrackingData.carrier}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Mode de transport</p>
-                <p className="font-bold text-gray-900">Aérien</p>
+                <p className="mb-1 text-sm text-slate-500">Mode de transport</p>
+                <p className="font-bold text-slate-900">Aerien</p>
               </div>
             </div>
-          </div>
+          </SurfaceCard>
 
           {/* Tracking Timeline */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Historique de suivi</h3>
+          <SurfaceCard className="p-6">
+            <h3 className="mb-6 text-xl font-bold text-slate-900">Historique de suivi</h3>
             <div className="space-y-6">
               {mappedTrackingData.events.map((event, index) => {
                 const IconComponent = event.icon;
@@ -266,22 +273,22 @@ export function TrackShipment() {
                         <div>
                           <h4
                             className={`font-bold ${
-                              event.completed ? "text-gray-900" : "text-gray-500"
+                              event.completed ? "text-slate-900" : "text-slate-500"
                             }`}
                           >
                             {event.status}
                           </h4>
-                          <p className="text-sm text-gray-500 mt-1">{event.location}</p>
+                          <p className="mt-1 text-sm text-slate-500">{event.location}</p>
                         </div>
-                        <p className="text-sm text-gray-500">{event.date}</p>
+                        <p className="text-sm text-slate-500">{event.date}</p>
                       </div>
-                      <p className="text-sm text-gray-600">{event.description}</p>
+                      <p className="text-sm text-slate-600">{event.description}</p>
                     </div>
                   </div>
                 );
               })}
             </div>
-          </div>
+          </SurfaceCard>
 
           {/* Help Section */}
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">

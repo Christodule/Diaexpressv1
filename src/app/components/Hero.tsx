@@ -2,35 +2,32 @@ import { Link } from "react-router";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-32">
-      {/* Background Image with Overlay */}
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden pt-24 md:pt-32">
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_left,_#6fccd4_0%,_#1a1a2e_45%,_#0f172a_100%)]">
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/45 to-black/20"></div>
         <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,_transparent_0%,_transparent_45%,_#ffffff_45%,_#ffffff_46%,_transparent_46%,_transparent_100%)]"></div>
       </div>
 
-      {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl">
-          {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#f4fee8] mb-6 leading-tight">
+          <h1 className="mb-6 text-4xl font-bold leading-tight text-[#f4fee8] sm:text-5xl md:text-6xl lg:text-7xl">
             Bienvenue à DIAEXPRESS
             <br />
-            <span className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">Service de livraison internationale</span>
+            <span className="text-3xl text-[#d9ecff] sm:text-4xl md:text-5xl lg:text-6xl">
+              Service de livraison internationale
+            </span>
           </h1>
 
-          {/* Subtitle */}
-          <div className="flex items-start gap-2 mb-8">
+          <div className="mb-8 flex items-start gap-2">
             <div className="w-1 h-6 bg-[#f1580c]"></div>
-            <div className="bg-[rgba(4,28,55,0.7)] backdrop-blur-sm px-4 py-2 rounded">
+            <div className="rounded border border-white/10 bg-[rgba(4,28,55,0.65)] px-4 py-2 backdrop-blur-sm">
               <p className="text-[#f4fee8] text-sm sm:text-base">Logistics & Supply Chain Solutions</p>
             </div>
           </div>
 
-          {/* CTA Button */}
           <Link
             to="/track-shipment"
-            className="inline-flex bg-[#f1580c] hover:bg-[#d14a0a] text-[#f4fee8] px-8 py-4 rounded-lg transition-all transform hover:scale-105 items-center gap-3 shadow-lg"
+            className="inline-flex items-center gap-3 rounded-xl bg-[#f1580c] px-8 py-4 text-[#f4fee8] shadow-lg transition-all hover:scale-105 hover:bg-[#d14a0a]"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -40,7 +37,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:block">
         <div className="animate-bounce">
           <svg className="w-6 h-6 text-[#f4fee8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

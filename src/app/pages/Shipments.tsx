@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Package, Search, Filter, MapPin, Calendar, Download } from "lucide-react";
 import { Link } from "react-router";
 import { fetchShipments, type Shipment } from "../lib/api";
+import { PageHeader, StatCard, SurfaceCard } from "../components/ui-v2";
 
 const fallbackShipments = [
   {
@@ -133,20 +134,16 @@ export function Shipments() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mes expéditions</h1>
-          <p className="mt-2 text-gray-600">Suivez l'état de toutes vos expéditions</p>
-        </div>
-        <Link
-          to="/quote-request"
-          className="px-6 py-3 bg-[#f1580c] hover:bg-[#d14a0a] text-white font-bold rounded-lg transition-colors flex items-center gap-2"
-        >
-          <Package className="w-5 h-5" />
-          Nouvelle expédition
-        </Link>
-      </div>
+      <PageHeader
+        title="Mes expeditions"
+        subtitle="Suivez l'etat de toutes vos expeditions avec une vue operationnelle."
+        action={
+          <Link to="/quote-request" className="dx-btn-primary">
+            <Package className="h-4 w-4" />
+            Nouvelle expedition
+          </Link>
+        }
+      />
 
       {/* Stats */}
       {apiError && (
@@ -155,40 +152,34 @@ export function Shipments() {
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
         {Object.entries(statusConfig).map(([key, config]) => {
           const count = shipments.filter((s) => s.status === key).length;
           return (
-            <div key={key} className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${config.color}`}></div>
-                <p className="text-sm text-gray-600">{config.label}</p>
-              </div>
-              <p className="text-2xl font-bold text-gray-900 mt-2">{count}</p>
-            </div>
+            <StatCard key={key} label={config.label} value={count} tone="default" />
           );
         })}
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <SurfaceCard className="p-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
             <input
               type="text"
               placeholder="Rechercher par numéro, origine ou destination..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+              className="dx-input pl-10"
             />
           </div>
           <div className="relative">
-            <Filter className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
+            <Filter className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4] appearance-none bg-white min-w-[200px]"
+              className="dx-input min-w-[200px] appearance-none pl-10 pr-10"
             >
               <option value="all">Tous les statuts</option>
               <option value="preparing">Préparation</option>
@@ -199,37 +190,35 @@ export function Shipments() {
             </select>
           </div>
         </div>
-      </div>
+      </SurfaceCard>
 
       {/* Shipments List */}
       <div className="space-y-4">
         {loading ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-            <p className="text-gray-500">Chargement des expeditions...</p>
-          </div>
+          <SurfaceCard className="p-12 text-center">
+            <p className="text-slate-500">Chargement des expeditions...</p>
+          </SurfaceCard>
         ) : filteredShipments.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">Aucune expédition trouvée</p>
-          </div>
+          <SurfaceCard className="p-12 text-center">
+            <Package className="mx-auto mb-4 h-16 w-16 text-slate-300" />
+            <p className="text-slate-500">Aucune expedition trouvee</p>
+          </SurfaceCard>
         ) : (
           filteredShipments.map((shipment) => (
-            <div
-              key={shipment.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
-            >
+            <SurfaceCard key={shipment.id} className="overflow-hidden transition hover:shadow-md">
               <div className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                   <div className="flex-1 space-y-4">
                     {/* Header */}
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">{shipment.id}</h3>
-                        <p className="text-sm text-gray-500 mt-1">Créé le {shipment.date}</p>
+                        <h3 className="text-xl font-bold text-slate-900">{shipment.id}</h3>
+                        <p className="mt-1 text-sm text-slate-500">Cree le {shipment.date}</p>
                       </div>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium text-white ${
-                          statusConfig[shipment.status as keyof typeof statusConfig].color
+                          (statusConfig[shipment.status as keyof typeof statusConfig] ??
+                            statusConfig.preparing).color
                         }`}
                       >
                         {shipment.statusLabel}
@@ -239,30 +228,31 @@ export function Shipments() {
                     {/* Route */}
                     <div className="flex items-center gap-4">
                       <div className="flex-1">
-                        <p className="text-xs text-gray-500 mb-1">Origine</p>
-                        <p className="font-medium text-gray-900">{shipment.origin}</p>
+                        <p className="mb-1 text-xs text-slate-500">Origine</p>
+                        <p className="font-medium text-slate-900">{shipment.origin}</p>
                       </div>
                       <div className="flex-shrink-0">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="h-8 w-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
                       </div>
                       <div className="flex-1">
-                        <p className="text-xs text-gray-500 mb-1">Destination</p>
-                        <p className="font-medium text-gray-900">{shipment.destination}</p>
+                        <p className="mb-1 text-xs text-slate-500">Destination</p>
+                        <p className="font-medium text-slate-900">{shipment.destination}</p>
                       </div>
                     </div>
 
                     {/* Progress Bar */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-sm text-gray-600">Progression</p>
-                        <p className="text-sm font-bold text-gray-900">{shipment.progress}%</p>
+                        <p className="text-sm text-slate-600">Progression</p>
+                        <p className="text-sm font-bold text-slate-900">{shipment.progress}%</p>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="h-2 w-full rounded-full bg-slate-200">
                         <div
                           className={`h-2 rounded-full ${
-                            statusConfig[shipment.status as keyof typeof statusConfig].color
+                            (statusConfig[shipment.status as keyof typeof statusConfig] ??
+                              statusConfig.preparing).color
                           }`}
                           style={{ width: `${shipment.progress}%` }}
                         ></div>
@@ -270,26 +260,26 @@ export function Shipments() {
                     </div>
 
                     {/* Additional Info */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+                    <div className="grid grid-cols-1 gap-4 border-t border-slate-100 pt-4 sm:grid-cols-3">
                       <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="w-4 h-4 text-gray-400" />
+                        <MapPin className="h-4 w-4 text-slate-400" />
                         <div>
-                          <p className="text-gray-500">Position actuelle</p>
-                          <p className="font-medium text-gray-900">{shipment.currentLocation}</p>
+                          <p className="text-slate-500">Position actuelle</p>
+                          <p className="font-medium text-slate-900">{shipment.currentLocation}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="w-4 h-4 text-gray-400" />
+                        <Calendar className="h-4 w-4 text-slate-400" />
                         <div>
-                          <p className="text-gray-500">Livraison estimée</p>
-                          <p className="font-medium text-gray-900">{shipment.estimatedDelivery}</p>
+                          <p className="text-slate-500">Livraison estimee</p>
+                          <p className="font-medium text-slate-900">{shipment.estimatedDelivery}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <Package className="w-4 h-4 text-gray-400" />
+                        <Package className="h-4 w-4 text-slate-400" />
                         <div>
-                          <p className="text-gray-500">Poids</p>
-                          <p className="font-medium text-gray-900">{shipment.weight}</p>
+                          <p className="text-slate-500">Poids</p>
+                          <p className="font-medium text-slate-900">{shipment.weight}</p>
                         </div>
                       </div>
                     </div>
@@ -299,11 +289,11 @@ export function Shipments() {
                   <div className="flex flex-col gap-2 lg:w-48">
                     <Link
                       to="/track-shipment"
-                      className="px-4 py-2 bg-[#6fccd4] hover:bg-[#5ab8c0] text-white rounded-lg transition-colors text-center"
+                      className="inline-flex items-center justify-center rounded-xl bg-[#6fccd4] px-4 py-2 font-semibold text-white transition hover:bg-[#5ab8c0]"
                     >
-                      Suivre en détail
+                      Suivre en detail
                     </Link>
-                    <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                    <button className="dx-btn-secondary">
                       <Download className="w-4 h-4" />
                       Bordereau
                     </button>
@@ -312,12 +302,12 @@ export function Shipments() {
               </div>
 
               {/* Footer */}
-              <div className="bg-gray-50 px-6 py-3 border-t border-gray-100">
-                <p className="text-xs text-gray-500">
-                  {shipment.trackingEvents} événements de suivi • Dernière mise à jour il y a 2h
+              <div className="border-t border-slate-100 bg-slate-50 px-6 py-3">
+                <p className="text-xs text-slate-500">
+                  {shipment.trackingEvents} evenements de suivi • Derniere mise a jour il y a 2h
                 </p>
               </div>
-            </div>
+            </SurfaceCard>
           ))
         )}
       </div>
