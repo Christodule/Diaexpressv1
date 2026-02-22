@@ -10,7 +10,7 @@ export function Hero() {
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl">
-          <h1 className="mb-6 text-4xl font-bold leading-tight text-[#f4fee8] sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="mb-6 text-4xl font-bold leading-[1.1] text-[#f4fee8] sm:text-5xl md:text-6xl lg:text-7xl">
             Bienvenue à DIAEXPRESS
             <br />
             <span className="text-3xl text-[#d9ecff] sm:text-4xl md:text-5xl lg:text-6xl">
@@ -25,15 +25,23 @@ export function Hero() {
             </div>
           </div>
 
-          <Link
-            to="/track-shipment"
-            className="inline-flex items-center gap-3 rounded-xl bg-[#f1580c] px-8 py-4 text-[#f4fee8] shadow-lg transition-all hover:scale-105 hover:bg-[#d14a0a]"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-            <span className="text-lg font-medium">Suivez votre colis</span>
-          </Link>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link
+              to="/track-shipment"
+              className="inline-flex items-center gap-3 rounded-xl bg-[#f1580c] px-8 py-4 text-[#f4fee8] shadow-lg transition-all hover:scale-105 hover:bg-[#d14a0a]"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+              <span className="text-lg font-medium">Suivez votre colis</span>
+            </Link>
+            <Link
+              to="/quote-request"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-6 py-4 text-white backdrop-blur-sm transition hover:bg-white/20"
+            >
+              Demander un devis
+            </Link>
+          </div>
         </div>
       </div>
 

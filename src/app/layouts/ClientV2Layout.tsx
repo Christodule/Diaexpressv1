@@ -101,7 +101,7 @@ export function ClientV2Layout() {
         </aside>
       </div>
 
-      <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-200 bg-white p-5 lg:flex lg:flex-col">
+      <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-200 bg-gradient-to-b from-white to-slate-50 p-5 lg:flex lg:flex-col">
         <div className="mb-6 flex items-center rounded-xl border border-slate-200 px-3 py-2">
           <img src={logo} alt="DIAEXPRESS" className="h-8 w-auto" />
         </div>
@@ -125,6 +125,7 @@ export function ClientV2Layout() {
 
       <div className="lg:pl-72">
         <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 px-4 py-3 backdrop-blur sm:px-6 lg:px-8">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#f1580c] via-[#ffb629] to-[#6fccd4]" />
           <div className="flex items-center justify-between">
             <button
               type="button"

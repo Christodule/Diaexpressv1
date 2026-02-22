@@ -66,6 +66,7 @@ export function Delivery() {
   return (
     <div className="space-y-8">
       <PageHeader
+        kicker="Last Mile"
         title="Livraisons"
         subtitle="Planification, execution et preuve de livraison au meme endroit."
       />
@@ -76,21 +77,24 @@ export function Delivery() {
           label="Planifiees"
           value={deliveries.filter((d) => d.status === "scheduled").length}
           tone="secondary"
+          icon={<Clock className="h-4 w-4" />}
         />
         <StatCard
           label="En route"
           value={deliveries.filter((d) => d.status === "in_transit").length}
           tone="warning"
+          icon={<Truck className="h-4 w-4" />}
         />
         <StatCard
           label="Livrees"
           value={deliveries.filter((d) => d.status === "delivered").length}
           tone="success"
+          icon={<CheckCircle className="h-4 w-4" />}
         />
       </div>
 
       {/* Filters */}
-      <SurfaceCard className="p-6">
+      <SurfaceCard className="p-6" soft>
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
@@ -135,7 +139,7 @@ export function Delivery() {
                   ? "warning"
                   : "info";
             return (
-              <SurfaceCard key={delivery.id} className="p-6 transition hover:shadow-md">
+              <SurfaceCard key={delivery.id} className="p-6" hover>
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                   <div className="flex-1 space-y-4">
                     {/* Header */}

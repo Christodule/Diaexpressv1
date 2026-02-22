@@ -8,27 +8,49 @@
   --dx-muted: #5a6178;
   --dx-surface: #ffffff;
   --dx-surface-soft: #f8fbff;
+  --dx-radius: 1rem;
 }
 
 @layer components {
   .dx-page {
-    @apply min-h-screen bg-[var(--dx-bg)] text-[var(--dx-text)];
+    @apply min-h-screen bg-[var(--dx-bg)] text-[var(--dx-text)] [font-family:Inter,ui-sans-serif,system-ui,sans-serif];
   }
 
   .dx-surface {
-    @apply rounded-2xl border border-slate-200/70 bg-[var(--dx-surface)] shadow-sm;
+    @apply rounded-[var(--dx-radius)] border border-slate-200/70 bg-[var(--dx-surface)] shadow-sm;
   }
 
   .dx-surface-soft {
-    @apply rounded-2xl border border-slate-200/70 bg-[var(--dx-surface-soft)] shadow-sm;
+    @apply rounded-[var(--dx-radius)] border border-slate-200/70 bg-[var(--dx-surface-soft)] shadow-sm;
   }
 
   .dx-title {
-    @apply text-3xl font-bold tracking-tight text-[var(--dx-text)];
+    @apply text-3xl font-bold tracking-[-0.02em] text-[var(--dx-text)];
   }
 
   .dx-subtitle {
-    @apply mt-2 text-sm text-[var(--dx-muted)];
+    @apply mt-2 max-w-3xl text-sm leading-relaxed text-[var(--dx-muted)];
+  }
+
+  .dx-kicker {
+    @apply mb-2 inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--dx-primary)];
+  }
+
+  .dx-kicker::before {
+    content: "";
+    @apply h-px w-6 bg-[var(--dx-primary)];
+  }
+
+  .dx-section-title {
+    @apply mb-4 flex items-center gap-2 text-lg font-bold text-slate-900;
+  }
+
+  .dx-section-divider {
+    @apply my-6 h-px w-full bg-slate-200;
+  }
+
+  .dx-card-hover {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:shadow-md;
   }
 
   .dx-pill {

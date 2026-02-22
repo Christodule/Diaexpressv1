@@ -48,7 +48,7 @@ export function Header() {
         </div>
       </div>
 
-      <div className="md:hidden bg-[#1a1a2e] px-4 py-3">
+      <div className="border-t border-white/10 bg-[#1a1a2e] px-4 py-3 md:hidden">
         <nav className="flex justify-center gap-6 text-sm">
           <a href="#tracking" className="text-[#f4fee8]">Suivi</a>
           <Link to="/quote-request" className="text-[#f4fee8]">Devis</Link>

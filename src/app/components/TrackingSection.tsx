@@ -10,9 +10,12 @@ export function TrackingSection() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
-          <h2 className="mb-4 text-3xl font-bold text-[#1a1a2e] sm:text-4xl md:text-5xl lg:text-6xl">
+          <h2 className="mb-3 text-3xl font-bold text-[#1a1a2e] sm:text-4xl md:text-5xl lg:text-6xl">
             Suivez votre colis en tout instant avec DIAEXPRESS
           </h2>
+          <p className="mx-auto max-w-3xl text-sm text-[#1a1a2e]/70 sm:text-base">
+            Un suivi visuel clair, des mises a jour en temps reel et une transparence totale sur vos expeditions.
+          </p>
         </div>
 
         <div className="max-w-4xl mx-auto">

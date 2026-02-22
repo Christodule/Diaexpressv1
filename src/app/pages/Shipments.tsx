@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Package, Search, Filter, MapPin, Calendar, Download } from "lucide-react";
+import { Package, Search, Filter, MapPin, Calendar, Download, Clock3, Truck, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Link } from "react-router";
 import { fetchShipments, type Shipment } from "../lib/api";
 import { PageHeader, StatCard, SurfaceCard } from "../components/ui-v2";
@@ -66,6 +66,22 @@ const statusConfig = {
   delivered: { color: "bg-green-500", label: "Livré" },
   issue: { color: "bg-red-500", label: "Problème" },
 };
+
+const statusTone = {
+  preparing: "default",
+  in_transit: "secondary",
+  customs: "warning",
+  delivered: "success",
+  issue: "danger",
+} as const;
+
+const statusIcon = {
+  preparing: <Clock3 className="h-4 w-4" />,
+  in_transit: <Truck className="h-4 w-4" />,
+  customs: <AlertTriangle className="h-4 w-4" />,
+  delivered: <CheckCircle2 className="h-4 w-4" />,
+  issue: <AlertTriangle className="h-4 w-4" />,
+} as const;
 
 export function Shipments() {
   const [shipments, setShipments] = useState(fallbackShipments);
@@ -135,6 +151,7 @@ export function Shipments() {
   return (
     <div className="space-y-8">
       <PageHeader
+        kicker="Shipments"
         title="Mes expeditions"
         subtitle="Suivez l'etat de toutes vos expeditions avec une vue operationnelle."
         action={
@@ -156,13 +173,19 @@ export function Shipments() {
         {Object.entries(statusConfig).map(([key, config]) => {
           const count = shipments.filter((s) => s.status === key).length;
           return (
-            <StatCard key={key} label={config.label} value={count} tone="default" />
+            <StatCard
+              key={key}
+              label={config.label}
+              value={count}
+              tone={statusTone[key as keyof typeof statusTone]}
+              icon={statusIcon[key as keyof typeof statusIcon]}
+            />
           );
         })}
       </div>
 
       {/* Filters */}
-      <SurfaceCard className="p-6">
+      <SurfaceCard className="p-6" soft>
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
@@ -205,7 +228,7 @@ export function Shipments() {
           </SurfaceCard>
         ) : (
           filteredShipments.map((shipment) => (
-            <SurfaceCard key={shipment.id} className="overflow-hidden transition hover:shadow-md">
+            <SurfaceCard key={shipment.id} className="overflow-hidden" hover>
               <div className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                   <div className="flex-1 space-y-4">

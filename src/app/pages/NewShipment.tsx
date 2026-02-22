@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router";
 import { ArrowLeft, Package, User, MapPin, Phone, Mail, Calendar, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { createShipment } from "../lib/api";
-import { PageHeader, SurfaceCard } from "../components/ui-v2";
+import { PageHeader, SectionTitle, SurfaceCard } from "../components/ui-v2";
 
 export function NewShipment() {
   const { quoteId } = useParams();
@@ -70,13 +70,14 @@ export function NewShipment() {
           Retour aux devis
         </Link>
         <PageHeader
+          kicker="Shipment Conversion"
           title="Nouvelle expedition"
           subtitle={`Conversion du devis ${quoteId ?? "-"} en expedition operationnelle.`}
         />
       </div>
 
       {/* Quote Summary */}
-      <div className="rounded-2xl bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0] p-6 text-white">
+      <div className="rounded-2xl bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0] p-6 text-white shadow-lg">
         <h2 className="text-xl font-bold mb-4">Résumé du devis</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
@@ -108,11 +109,11 @@ export function NewShipment() {
         )}
 
         {/* Sender Information */}
-        <SurfaceCard className="p-6">
-          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
-            <User className="w-5 h-5 text-[#f1580c]" />
-            Informations expediteur
-          </h2>
+        <SurfaceCard className="p-6" hover>
+          <SectionTitle
+            icon={<User className="h-5 w-5" />}
+            title="Informations expediteur"
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -169,11 +170,11 @@ export function NewShipment() {
         </SurfaceCard>
 
         {/* Recipient Information */}
-        <SurfaceCard className="p-6">
-          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
-            <User className="w-5 h-5 text-[#f1580c]" />
-            Informations destinataire
-          </h2>
+        <SurfaceCard className="p-6" hover>
+          <SectionTitle
+            icon={<User className="h-5 w-5" />}
+            title="Informations destinataire"
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -230,11 +231,11 @@ export function NewShipment() {
         </SurfaceCard>
 
         {/* Pickup & Delivery */}
-        <SurfaceCard className="p-6">
-          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
-            <Calendar className="w-5 h-5 text-[#f1580c]" />
-            Enlevement et livraison
-          </h2>
+        <SurfaceCard className="p-6" hover>
+          <SectionTitle
+            icon={<Calendar className="h-5 w-5" />}
+            title="Enlevement et livraison"
+          />
           <div className="space-y-4">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -264,11 +265,11 @@ export function NewShipment() {
         </SurfaceCard>
 
         {/* Payment Method */}
-        <SurfaceCard className="p-6">
-          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
-            <CreditCard className="w-5 h-5 text-[#f1580c]" />
-            Mode de paiement
-          </h2>
+        <SurfaceCard className="p-6" soft>
+          <SectionTitle
+            icon={<CreditCard className="h-5 w-5" />}
+            title="Mode de paiement"
+          />
           <div className="space-y-3">
             <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-slate-200 p-4 transition-colors hover:border-[#6fccd4]">
               <input

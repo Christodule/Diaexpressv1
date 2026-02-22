@@ -120,12 +120,13 @@ export function TrackShipment() {
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <PageHeader
+        kicker="Tracking"
         title="Suivi de colis"
         subtitle="Consultez l'historique de transit et l'estimation de livraison."
       />
 
       {/* Search Box */}
-      <SurfaceCard className="p-6">
+      <SurfaceCard className="p-6" soft>
         <form onSubmit={handleSearch} className="flex gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
@@ -162,13 +163,8 @@ export function TrackShipment() {
                 <h2 className="text-2xl font-bold mb-2">{trackingData.id}</h2>
                 <StatusBadge
                   label={mappedTrackingData.statusLabel}
-                  tone={
-                    mappedTrackingData.status === "delivered"
-                      ? "success"
-                      : mappedTrackingData.status === "in_transit"
-                        ? "info"
-                        : "warning"
-                  }
+                  tone="neutral"
+                  className="border-white/30 bg-white/20 text-white"
                 />
               </div>
               <button className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors flex items-center gap-2">
@@ -219,7 +215,7 @@ export function TrackShipment() {
           </div>
 
           {/* Package Details */}
-          <SurfaceCard className="p-6">
+          <SurfaceCard className="p-6" hover>
             <h3 className="mb-4 text-xl font-bold text-slate-900">Details du colis</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
@@ -238,7 +234,7 @@ export function TrackShipment() {
           </SurfaceCard>
 
           {/* Tracking Timeline */}
-          <SurfaceCard className="p-6">
+          <SurfaceCard className="p-6" hover>
             <h3 className="mb-6 text-xl font-bold text-slate-900">Historique de suivi</h3>
             <div className="space-y-6">
               {mappedTrackingData.events.map((event, index) => {
@@ -291,7 +287,7 @@ export function TrackShipment() {
           </SurfaceCard>
 
           {/* Help Section */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+          <SurfaceCard className="border-yellow-200 bg-yellow-50 p-6" soft>
             <div className="flex gap-4">
               <AlertCircle className="w-6 h-6 text-yellow-600 flex-shrink-0" />
               <div>
@@ -300,12 +296,12 @@ export function TrackShipment() {
                   Si vous avez des questions concernant votre envoi ou si vous constatez un retard,
                   notre équipe est là pour vous aider.
                 </p>
-                <button className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors text-sm font-medium">
+                <button className="rounded-lg bg-yellow-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-yellow-700">
                   Contacter le support
                 </button>
               </div>
             </div>
-          </div>
+          </SurfaceCard>
         </>
       )}
     </div>

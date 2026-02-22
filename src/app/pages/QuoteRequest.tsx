@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Package, MapPin, Calendar, Weight, Ruler, FileText, Send } from "lucide-react";
 import { createQuoteRequest, estimatePricing } from "../lib/api";
-import { PageHeader, SurfaceCard } from "../components/ui-v2";
+import { PageHeader, SectionTitle, SurfaceCard } from "../components/ui-v2";
 
 export function QuoteRequest() {
   const [formData, setFormData] = useState({
@@ -71,6 +71,7 @@ export function QuoteRequest() {
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <PageHeader
+        kicker="Quotation"
         title="Demande de devis"
         subtitle="Renseignez les informations d'expedition pour recevoir une proposition tarifaire."
       />
@@ -89,11 +90,12 @@ export function QuoteRequest() {
         )}
 
         {/* Origin & Destination */}
-        <SurfaceCard className="p-6">
-          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
-            <MapPin className="w-5 h-5 text-[#f1580c]" />
-            Itineraire
-          </h2>
+        <SurfaceCard className="p-6" hover>
+          <SectionTitle
+            icon={<MapPin className="h-5 w-5" />}
+            title="Itineraire"
+            subtitle="Renseignez les villes de depart et d'arrivee."
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
@@ -125,11 +127,12 @@ export function QuoteRequest() {
         </SurfaceCard>
 
         {/* Package Details */}
-        <SurfaceCard className="p-6">
-          <h2 className="mb-6 flex items-center gap-2 text-lg font-bold text-slate-900">
-            <Package className="w-5 h-5 text-[#f1580c]" />
-            Details du colis
-          </h2>
+        <SurfaceCard className="p-6" hover>
+          <SectionTitle
+            icon={<Package className="h-5 w-5" />}
+            title="Details du colis"
+            subtitle="Poids, dimensions et nature du colis."
+          />
           
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -274,8 +277,8 @@ export function QuoteRequest() {
         </SurfaceCard>
 
         {/* Additional Services */}
-        <SurfaceCard className="p-6">
-          <h2 className="mb-4 text-lg font-bold text-slate-900">Services additionnels</h2>
+        <SurfaceCard className="p-6" soft>
+          <SectionTitle title="Services additionnels" />
           <div className="space-y-3">
             <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 p-4 transition-colors hover:border-cyan-300">
               <input type="checkbox" className="w-5 h-5 text-[#f1580c] border-gray-300 rounded" />

@@ -1,5 +1,6 @@
 export {
   PageHeader,
+  SectionTitle,
   SurfaceCard,
   StatCard,
   StatusBadge,

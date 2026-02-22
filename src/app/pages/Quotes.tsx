@@ -115,6 +115,7 @@ export function Quotes() {
   return (
     <div className="space-y-8">
       <PageHeader
+        kicker="Quotations"
         title="Mes devis"
         subtitle="Gerez vos demandes de devis et suivez leur statut en un clin d'oeil."
         action={
@@ -133,26 +134,29 @@ export function Quotes() {
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total" value={quotes.length} />
+        <StatCard label="Total" value={quotes.length} icon={<FileText className="h-4 w-4" />} />
         <StatCard
           label="En attente"
           value={quotes.filter((q) => q.status === "pending").length}
           tone="warning"
+          icon={<Clock className="h-4 w-4" />}
         />
         <StatCard
           label="Approuves"
           value={quotes.filter((q) => q.status === "approved").length}
           tone="success"
+          icon={<CheckCircle className="h-4 w-4" />}
         />
         <StatCard
           label="Refuses / Expires"
           value={quotes.filter((q) => q.status === "rejected" || q.status === "expired").length}
           tone="default"
+          icon={<XCircle className="h-4 w-4" />}
         />
       </div>
 
       {/* Filters */}
-      <SurfaceCard className="p-6">
+      <SurfaceCard className="p-6" soft>
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
@@ -205,7 +209,7 @@ export function Quotes() {
                     ? "danger"
                     : "neutral";
             return (
-              <SurfaceCard key={quote.id} className="p-6 transition hover:shadow-md">
+              <SurfaceCard key={quote.id} className="p-6" hover>
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">

@@ -4,6 +4,8 @@ type StatCardProps = {
   label: string;
   value: ReactNode;
   tone?: "default" | "primary" | "secondary" | "success" | "warning" | "danger";
+  icon?: ReactNode;
+  hint?: string;
 };
 
 const toneClasses: Record<NonNullable<StatCardProps["tone"]>, string> = {
@@ -15,11 +17,15 @@ const toneClasses: Record<NonNullable<StatCardProps["tone"]>, string> = {
   danger: "border-red-200 bg-red-50 text-red-700",
 };
 
-export function StatCard({ label, value, tone = "default" }: StatCardProps) {
+export function StatCard({ label, value, tone = "default", icon, hint }: StatCardProps) {
   return (
     <div className={`rounded-xl border p-4 ${toneClasses[tone]}`}>
-      <p className="text-xs font-medium opacity-90">{label}</p>
-      <p className="mt-2 text-2xl font-bold">{value}</p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium uppercase tracking-wide opacity-90">{label}</p>
+        {icon ? <span className="opacity-70">{icon}</span> : null}
+      </div>
+      <p className="mt-2 text-2xl font-bold leading-none">{value}</p>
+      {hint ? <p className="mt-2 text-xs opacity-80">{hint}</p> : null}
     </div>
   );
 }
