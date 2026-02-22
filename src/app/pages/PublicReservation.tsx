@@ -3,6 +3,7 @@ import { Package, MapPin, Calendar, User, Phone, Mail, CreditCard, ArrowRight } 
 import { Link } from "react-router";
 import logo from "../assets/diaexpress-logo.svg";
 import { createReservation } from "../lib/api";
+import { PageHeader, SectionTitle, SurfaceCard } from "../components/ui-v2";
 
 export function PublicReservation() {
   const [step, setStep] = useState(1);
@@ -63,349 +64,337 @@ export function PublicReservation() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f4fee8] to-[#e8f5f1]">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-100">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link to="/" className="flex items-center gap-3">
-              <img src={logo} alt="DIAEXPRESS" className="h-10" />
-            </Link>
-            <Link
-              to="/dashboard"
-              className="px-6 py-2 border-2 border-[#f1580c] text-[#f1580c] hover:bg-[#f1580c] hover:text-white rounded-lg transition-colors font-medium"
-            >
-              Espace client
-            </Link>
-          </div>
+    <div className="dx-page">
+      <div className="border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link to="/" className="flex items-center gap-3">
+            <img src={logo} alt="DIAEXPRESS" className="h-10" />
+          </Link>
+          <Link to="/dashboard" className="dx-btn-secondary py-2">
+            Espace client
+          </Link>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Progress Steps */}
-          <div className="mb-12">
-            <div className="flex items-center justify-between">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl space-y-8">
+          <PageHeader
+            kicker="Public booking"
+            title="Réservation expédition"
+            subtitle="Finalisez votre demande en 3 étapes simples."
+          />
+
+          <SurfaceCard className="p-6" soft>
+            <div className="flex items-center justify-between gap-3">
               {[
                 { num: 1, label: "Itinéraire" },
                 { num: 2, label: "Contacts" },
                 { num: 3, label: "Paiement" },
               ].map((s, index) => (
-                <div key={s.num} className="flex items-center flex-1">
-                  <div className="flex flex-col items-center flex-1">
+                <div key={s.num} className="flex flex-1 items-center">
+                  <div className="flex flex-1 flex-col items-center">
                     <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all ${
+                      className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition ${
                         step >= s.num
-                          ? "bg-[#f1580c] text-white shadow-lg"
-                          : "bg-white border-2 border-gray-300 text-gray-500"
+                          ? "bg-[#f1580c] text-white shadow"
+                          : "border-2 border-slate-300 bg-white text-slate-500"
                       }`}
                     >
                       {s.num}
                     </div>
                     <p
-                      className={`mt-2 text-sm font-medium ${
-                        step >= s.num ? "text-[#f1580c]" : "text-gray-500"
+                      className={`mt-2 text-xs font-semibold sm:text-sm ${
+                        step >= s.num ? "text-[#f1580c]" : "text-slate-500"
                       }`}
                     >
                       {s.label}
                     </p>
                   </div>
                   {index < 2 && (
-                    <div
-                      className={`h-1 flex-1 mx-4 transition-all ${
-                        step > s.num ? "bg-[#f1580c]" : "bg-gray-300"
-                      }`}
-                    ></div>
+                    <div className={`mx-3 h-1 flex-1 rounded ${step > s.num ? "bg-[#f1580c]" : "bg-slate-300"}`} />
                   )}
                 </div>
               ))}
             </div>
-          </div>
+          </SurfaceCard>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8">
-            {requestStatus && (
-              <div
-                className={`mb-6 rounded-lg border px-4 py-3 text-sm ${
-                  requestStatus.type === "success"
-                    ? "border-green-200 bg-green-50 text-green-700"
-                    : "border-red-200 bg-red-50 text-red-700"
-                }`}
-              >
-                {requestStatus.message}
-              </div>
-            )}
-
-            {/* Step 1: Route */}
-            {step === 1 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Informations d'itinéraire</h2>
-                  <p className="text-gray-600">Où souhaitez-vous envoyer votre colis ?</p>
+          <SurfaceCard className="p-8" hover>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {requestStatus && (
+                <div
+                  className={`rounded-lg border px-4 py-3 text-sm ${
+                    requestStatus.type === "success"
+                      ? "border-green-200 bg-green-50 text-green-700"
+                      : "border-red-200 bg-red-50 text-red-700"
+                  }`}
+                >
+                  {requestStatus.message}
                 </div>
+              )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-[#f1580c]" />
-                      Ville de départ *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.origin}
-                      onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
-                      placeholder="Ex: Abidjan"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-[#f1580c]" />
-                      Ville d'arrivée *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.destination}
-                      onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                      placeholder="Ex: Paris"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                      <Package className="w-4 h-4 text-[#f1580c]" />
-                      Poids approximatif (kg) *
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min="0"
-                      step="0.1"
-                      value={formData.weight}
-                      onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                      placeholder="Ex: 25"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-[#f1580c]" />
-                      Date de collecte souhaitée *
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={formData.pickupDate}
-                      onChange={(e) => setFormData({ ...formData, pickupDate: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
-                    />
-                  </div>
-                </div>
+              {step === 1 && (
+                <div className="space-y-6">
+                  <SectionTitle
+                    title="Informations d'itinéraire"
+                    subtitle="Où souhaitez-vous envoyer votre colis ?"
+                    icon={<MapPin className="h-5 w-5" />}
+                  />
 
-                <div className="bg-gradient-to-r from-[#6fccd4]/10 to-[#5ab8c0]/10 border border-[#6fccd4]/20 rounded-lg p-6">
-                  <h3 className="font-bold text-gray-900 mb-2">Estimation du prix</h3>
-                  <p className="text-3xl font-bold text-[#f1580c]">
-                    {formData.weight ? `${(parseFloat(formData.weight) * 1500).toLocaleString()} FCFA` : "— FCFA"}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">Prix indicatif basé sur le poids</p>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Contacts */}
-            {step === 2 && (
-              <div className="space-y-8">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Informations de contact</h2>
-                  <p className="text-gray-600">Qui envoie et qui reçoit ce colis ?</p>
-                </div>
-
-                {/* Sender */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <User className="w-5 h-5 text-[#f1580c]" />
-                    Expéditeur
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Nom complet *</label>
+                      <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <MapPin className="h-4 w-4 text-[#f1580c]" />
+                        Ville de départ *
+                      </label>
                       <input
                         type="text"
                         required
-                        value={formData.senderName}
-                        onChange={(e) => setFormData({ ...formData, senderName: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                        value={formData.origin}
+                        onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
+                        placeholder="Ex: Abidjan"
+                        className="dx-input"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Téléphone *
+                      <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <MapPin className="h-4 w-4 text-[#f1580c]" />
+                        Ville d'arrivée *
                       </label>
-                      <input
-                        type="tel"
-                        required
-                        value={formData.senderPhone}
-                        onChange={(e) => setFormData({ ...formData, senderPhone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        value={formData.senderEmail}
-                        onChange={(e) => setFormData({ ...formData, senderEmail: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-200"></div>
-
-                {/* Recipient */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <User className="w-5 h-5 text-[#f1580c]" />
-                    Destinataire
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Nom complet *</label>
                       <input
                         type="text"
                         required
-                        value={formData.recipientName}
-                        onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                        value={formData.destination}
+                        onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                        placeholder="Ex: Paris"
+                        className="dx-input"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Téléphone *
+                      <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <Package className="h-4 w-4 text-[#f1580c]" />
+                        Poids approximatif (kg) *
                       </label>
                       <input
-                        type="tel"
+                        type="number"
                         required
-                        value={formData.recipientPhone}
-                        onChange={(e) => setFormData({ ...formData, recipientPhone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
+                        min="0"
+                        step="0.1"
+                        value={formData.weight}
+                        onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                        placeholder="Ex: 25"
+                        className="dx-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <Calendar className="h-4 w-4 text-[#f1580c]" />
+                        Date de collecte souhaitée *
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        value={formData.pickupDate}
+                        onChange={(e) => setFormData({ ...formData, pickupDate: e.target.value })}
+                        className="dx-input"
                       />
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
 
-            {/* Step 3: Payment */}
-            {step === 3 && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Mode de paiement</h2>
-                  <p className="text-gray-600">Choisissez comment vous souhaitez payer</p>
+                  <div className="rounded-xl border border-cyan-200 bg-cyan-50 p-6">
+                    <h3 className="font-bold text-slate-900">Estimation du prix</h3>
+                    <p className="mt-2 text-3xl font-bold text-[#f1580c]">
+                      {formData.weight
+                        ? `${(parseFloat(formData.weight) * 1500).toLocaleString()} FCFA`
+                        : "— FCFA"}
+                    </p>
+                    <p className="mt-2 text-sm text-slate-600">Prix indicatif basé sur le poids</p>
+                  </div>
                 </div>
+              )}
 
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="card"
-                      checked={formData.paymentMethod === "card"}
-                      onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                      className="w-5 h-5 text-[#f1580c]"
-                    />
-                    <CreditCard className="w-6 h-6 text-gray-600" />
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">Carte bancaire</p>
-                      <p className="text-sm text-gray-500">Visa, Mastercard</p>
-                    </div>
-                  </label>
-                  <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg hover:border-[#6fccd4] cursor-pointer transition-colors">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="mobile"
-                      checked={formData.paymentMethod === "mobile"}
-                      onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                      className="w-5 h-5 text-[#f1580c]"
-                    />
-                    <Phone className="w-6 h-6 text-gray-600" />
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">Mobile Money</p>
-                      <p className="text-sm text-gray-500">Orange Money, MTN, Moov</p>
-                    </div>
-                  </label>
-                </div>
+              {step === 2 && (
+                <div className="space-y-8">
+                  <SectionTitle
+                    title="Informations de contact"
+                    subtitle="Qui envoie et qui reçoit ce colis ?"
+                    icon={<User className="h-5 w-5" />}
+                  />
 
-                {/* Summary */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
-                  <h3 className="font-bold text-gray-900 mb-4">Récapitulatif</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Itinéraire:</span>
-                      <span className="font-medium">{formData.origin} → {formData.destination}</span>
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-lg font-bold text-slate-900">
+                      <User className="h-5 w-5 text-[#f1580c]" />
+                      Expéditeur
+                    </h3>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-slate-700">Nom complet *</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.senderName}
+                          onChange={(e) => setFormData({ ...formData, senderName: e.target.value })}
+                          className="dx-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
+                          <Phone className="h-4 w-4" />
+                          Téléphone *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={formData.senderPhone}
+                          onChange={(e) => setFormData({ ...formData, senderPhone: e.target.value })}
+                          className="dx-input"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
+                          <Mail className="h-4 w-4" />
+                          Email *
+                        </label>
+                        <input
+                          type="email"
+                          required
+                          value={formData.senderEmail}
+                          onChange={(e) => setFormData({ ...formData, senderEmail: e.target.value })}
+                          className="dx-input"
+                        />
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Poids:</span>
-                      <span className="font-medium">{formData.weight} kg</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Date de collecte:</span>
-                      <span className="font-medium">{formData.pickupDate}</span>
-                    </div>
-                    <div className="border-t border-gray-300 my-3"></div>
-                    <div className="flex justify-between text-lg">
-                      <span className="font-bold text-gray-900">Total:</span>
-                      <span className="font-bold text-[#f1580c]">
-                        {(parseFloat(formData.weight || "0") * 1500).toLocaleString()} FCFA
-                      </span>
+                  </div>
+
+                  <div className="dx-section-divider" />
+
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-lg font-bold text-slate-900">
+                      <User className="h-5 w-5 text-[#f1580c]" />
+                      Destinataire
+                    </h3>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-slate-700">Nom complet *</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.recipientName}
+                          onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
+                          className="dx-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-700">
+                          <Phone className="h-4 w-4" />
+                          Téléphone *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={formData.recipientPhone}
+                          onChange={(e) => setFormData({ ...formData, recipientPhone: e.target.value })}
+                          className="dx-input"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Navigation Buttons */}
-            <div className="flex gap-4 mt-8 pt-8 border-t border-gray-200">
-              {step > 1 && (
-                <button
-                  type="button"
-                  onClick={handlePrevious}
-                  className="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Précédent
-                </button>
+              {step === 3 && (
+                <div className="space-y-6">
+                  <SectionTitle
+                    title="Mode de paiement"
+                    subtitle="Choisissez comment vous souhaitez payer."
+                    icon={<CreditCard className="h-5 w-5" />}
+                  />
+
+                  <div className="space-y-3">
+                    <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-slate-200 p-4 transition hover:border-[#6fccd4]">
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="card"
+                        checked={formData.paymentMethod === "card"}
+                        onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                        className="h-5 w-5 text-[#f1580c]"
+                      />
+                      <CreditCard className="h-6 w-6 text-slate-600" />
+                      <div className="flex-1">
+                        <p className="font-medium text-slate-900">Carte bancaire</p>
+                        <p className="text-sm text-slate-500">Visa, Mastercard</p>
+                      </div>
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-slate-200 p-4 transition hover:border-[#6fccd4]">
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="mobile"
+                        checked={formData.paymentMethod === "mobile"}
+                        onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
+                        className="h-5 w-5 text-[#f1580c]"
+                      />
+                      <Phone className="h-6 w-6 text-slate-600" />
+                      <div className="flex-1">
+                        <p className="font-medium text-slate-900">Mobile Money</p>
+                        <p className="text-sm text-slate-500">Orange Money, MTN, Moov</p>
+                      </div>
+                    </label>
+                  </div>
+
+                  <SurfaceCard className="border-slate-200 bg-slate-50 p-6" soft>
+                    <h3 className="mb-4 font-bold text-slate-900">Récapitulatif</h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Itinéraire:</span>
+                        <span className="font-medium">
+                          {formData.origin} → {formData.destination}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Poids:</span>
+                        <span className="font-medium">{formData.weight} kg</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-600">Date de collecte:</span>
+                        <span className="font-medium">{formData.pickupDate}</span>
+                      </div>
+                      <div className="my-3 border-t border-slate-300" />
+                      <div className="flex justify-between text-lg">
+                        <span className="font-bold text-slate-900">Total:</span>
+                        <span className="font-bold text-[#f1580c]">
+                          {(parseFloat(formData.weight || "0") * 1500).toLocaleString()} FCFA
+                        </span>
+                      </div>
+                    </div>
+                  </SurfaceCard>
+                </div>
               )}
-              {step < 3 ? (
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
-                >
-                  Suivant
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex-1 px-6 py-4 bg-[#f1580c] hover:bg-[#d14a0a] disabled:opacity-70 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
-                >
-                  <CreditCard className="w-5 h-5" />
-                  {isSubmitting ? "Confirmation..." : "Confirmer et payer"}
-                </button>
-              )}
-            </div>
-          </form>
+
+              <div className="mt-8 flex gap-4 border-t border-slate-200 pt-8">
+                {step > 1 && (
+                  <button type="button" onClick={handlePrevious} className="dx-btn-secondary flex-1">
+                    Précédent
+                  </button>
+                )}
+                {step < 3 ? (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="dx-btn-primary flex-1"
+                  >
+                    Suivant
+                    <ArrowRight className="h-5 w-5" />
+                  </button>
+                ) : (
+                  <button type="submit" disabled={isSubmitting} className="dx-btn-primary flex-1">
+                    <CreditCard className="h-5 w-5" />
+                    {isSubmitting ? "Confirmation..." : "Confirmer et payer"}
+                  </button>
+                )}
+              </div>
+            </form>
+          </SurfaceCard>
         </div>
       </div>
     </div>

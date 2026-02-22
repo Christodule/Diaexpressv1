@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CreditCard, Download, Search, Filter, CheckCircle, Clock, XCircle } from "lucide-react";
+import { PageHeader, SectionTitle, StatCard, StatusBadge, SurfaceCard } from "../components/ui-v2";
 
 const invoices = [
   {
@@ -95,58 +96,56 @@ export function Payments() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Paiements</h1>
-        <p className="mt-2 text-gray-600">Gérez vos factures et moyens de paiement</p>
+      <PageHeader
+        kicker="Billing"
+        title="Paiements"
+        subtitle="Gérez vos factures et moyens de paiement."
+      />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          label="Total factures"
+          value={invoices.length}
+          icon={<CreditCard className="h-4 w-4" />}
+        />
+        <StatCard
+          label="Total payé"
+          value={`${totalPaid.toLocaleString()} FCFA`}
+          tone="success"
+          hint="Factures réglées"
+        />
+        <StatCard
+          label="En attente"
+          value={invoices.filter((i) => i.status === "pending").length}
+          tone="warning"
+        />
+        <StatCard
+          label="En retard"
+          value={invoices.filter((i) => i.status === "overdue").length}
+          tone="danger"
+          hint={`${totalPending.toLocaleString()} FCFA à traiter`}
+        />
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-          <p className="text-sm text-gray-600">Total factures</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{invoices.length}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-green-100 p-6">
-          <p className="text-sm text-green-600">Total payé</p>
-          <p className="text-2xl font-bold text-green-700 mt-1">
-            {totalPaid.toLocaleString()} FCFA
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-yellow-100 p-6">
-          <p className="text-sm text-yellow-600">En attente</p>
-          <p className="text-2xl font-bold text-yellow-700 mt-1">
-            {invoices.filter((i) => i.status === "pending").length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm border border-red-100 p-6">
-          <p className="text-sm text-red-600">En retard</p>
-          <p className="text-2xl font-bold text-red-700 mt-1">
-            {invoices.filter((i) => i.status === "overdue").length}
-          </p>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="border-b border-gray-100">
+      <SurfaceCard className="overflow-hidden p-0">
+        <div className="border-b border-slate-200 bg-slate-50">
           <div className="flex">
             <button
               onClick={() => setActiveTab("invoices")}
-              className={`flex-1 px-6 py-4 font-medium transition-colors ${
+              className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
                 activeTab === "invoices"
-                  ? "text-[#f1580c] border-b-2 border-[#f1580c]"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "border-b-2 border-[#f1580c] bg-white text-[#f1580c]"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Factures
             </button>
             <button
               onClick={() => setActiveTab("methods")}
-              className={`flex-1 px-6 py-4 font-medium transition-colors ${
+              className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
                 activeTab === "methods"
-                  ? "text-[#f1580c] border-b-2 border-[#f1580c]"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "border-b-2 border-[#f1580c] bg-white text-[#f1580c]"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Moyens de paiement
@@ -155,149 +154,148 @@ export function Payments() {
         </div>
 
         {activeTab === "invoices" ? (
-          <div className="p-6 space-y-6">
-            {/* Filters */}
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Rechercher une facture..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4]"
-                />
+          <div className="space-y-6 p-6">
+            <SurfaceCard className="p-4" soft>
+              <div className="flex flex-col gap-4 md:flex-row">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher une facture..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="dx-input pl-10"
+                  />
+                </div>
+                <div className="relative">
+                  <Filter className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                    className="dx-input min-w-[200px] appearance-none pl-10 pr-10"
+                  >
+                    <option value="all">Tous les statuts</option>
+                    <option value="paid">Payée</option>
+                    <option value="pending">En attente</option>
+                    <option value="overdue">En retard</option>
+                  </select>
+                </div>
               </div>
-              <div className="relative">
-                <Filter className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6fccd4] appearance-none bg-white min-w-[200px]"
-                >
-                  <option value="all">Tous les statuts</option>
-                  <option value="paid">Payée</option>
-                  <option value="pending">En attente</option>
-                  <option value="overdue">En retard</option>
-                </select>
-              </div>
-            </div>
+            </SurfaceCard>
 
-            {/* Invoices List */}
             <div className="space-y-4">
               {filteredInvoices.length === 0 ? (
-                <div className="text-center py-12">
-                  <CreditCard className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">Aucune facture trouvée</p>
+                <div className="py-12 text-center">
+                  <CreditCard className="mx-auto mb-4 h-16 w-16 text-slate-300" />
+                  <p className="text-slate-500">Aucune facture trouvée</p>
                 </div>
               ) : (
                 filteredInvoices.map((invoice) => {
-                  const StatusIcon = statusConfig[invoice.status as keyof typeof statusConfig].icon;
+                  const status = statusConfig[invoice.status as keyof typeof statusConfig];
+                  const StatusIcon = status.icon;
+                  const tone =
+                    invoice.status === "paid"
+                      ? "success"
+                      : invoice.status === "pending"
+                        ? "warning"
+                        : "danger";
+
                   return (
-                    <div
-                      key={invoice.id}
-                      className="border border-gray-200 rounded-lg p-6 hover:border-[#6fccd4] transition-colors"
-                    >
-                      <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                    <SurfaceCard key={invoice.id} className="p-6" hover>
+                      <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
                         <div className="flex-1">
-                          <div className="flex items-start justify-between mb-3">
+                          <div className="mb-3 flex items-start justify-between gap-3">
                             <div>
-                              <h3 className="text-lg font-bold text-gray-900">{invoice.id}</h3>
-                              <p className="text-sm text-gray-500 mt-1">
+                              <h3 className="text-lg font-bold text-slate-900">{invoice.id}</h3>
+                              <p className="mt-1 text-sm text-slate-500">
                                 Émise le {invoice.date} • Échéance: {invoice.dueDate}
                               </p>
                             </div>
-                            <span
-                              className={`px-3 py-1 rounded-full text-xs font-medium border flex items-center gap-1 ${
-                                statusConfig[invoice.status as keyof typeof statusConfig].color
-                              }`}
-                            >
-                              <StatusIcon className="w-3 h-3" />
-                              {invoice.statusLabel}
-                            </span>
+                            <StatusBadge
+                              tone={tone}
+                              className={`gap-1 ${status.color}`}
+                              label={
+                                <>
+                                  <StatusIcon className="h-3 w-3" />
+                                  {invoice.statusLabel}
+                                </>
+                              }
+                            />
                           </div>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                             <div>
-                              <p className="text-xs text-gray-500 mb-1">Expédition</p>
-                              <p className="font-medium text-gray-900">{invoice.shipmentId}</p>
+                              <p className="mb-1 text-xs text-slate-500">Expédition</p>
+                              <p className="font-medium text-slate-900">{invoice.shipmentId}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-500 mb-1">Description</p>
-                              <p className="font-medium text-gray-900">{invoice.description}</p>
+                              <p className="mb-1 text-xs text-slate-500">Description</p>
+                              <p className="font-medium text-slate-900">{invoice.description}</p>
                             </div>
                             <div>
-                              <p className="text-xs text-gray-500 mb-1">Moyen de paiement</p>
-                              <p className="font-medium text-gray-900">{invoice.paymentMethod}</p>
+                              <p className="mb-1 text-xs text-slate-500">Moyen de paiement</p>
+                              <p className="font-medium text-slate-900">{invoice.paymentMethod}</p>
                             </div>
                           </div>
                         </div>
                         <div className="flex flex-col gap-2 lg:w-56">
-                          <div className="text-center lg:text-right mb-2">
-                            <p className="text-xs text-gray-500">Montant</p>
+                          <div className="mb-1 text-center lg:text-right">
+                            <p className="text-xs text-slate-500">Montant</p>
                             <p className="text-2xl font-bold text-[#f1580c]">{invoice.amount}</p>
                           </div>
                           <div className="flex gap-2">
                             {invoice.status !== "paid" && (
-                              <button className="flex-1 px-4 py-2 bg-[#f1580c] hover:bg-[#d14a0a] text-white rounded-lg transition-colors text-sm font-medium">
-                                Payer
-                              </button>
+                              <button className="dx-btn-primary flex-1 py-2">Payer</button>
                             )}
-                            <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                              <Download className="w-4 h-4" />
+                            <button className="dx-btn-secondary px-4 py-2">
+                              <Download className="h-4 w-4" />
                             </button>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </SurfaceCard>
                   );
                 })
               )}
             </div>
           </div>
         ) : (
-          <div className="p-6 space-y-6">
-            {/* Payment Methods */}
+          <div className="space-y-6 p-6">
+            <SectionTitle
+              title="Moyens de paiement"
+              subtitle="Ajoutez et gérez vos modes de règlement."
+              icon={<CreditCard className="h-5 w-5" />}
+            />
             <div className="space-y-4">
               {paymentMethods.map((method, index) => (
-                <div
-                  key={index}
-                  className="border border-gray-200 rounded-lg p-6 hover:border-[#6fccd4] transition-colors"
-                >
-                  <div className="flex items-center justify-between">
+                <SurfaceCard key={index} className="p-6" hover>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0] rounded-lg flex items-center justify-center">
-                        <CreditCard className="w-6 h-6 text-white" />
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-[#6fccd4] to-[#5ab8c0]">
+                        <CreditCard className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900">{method.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{method.number}</p>
+                        <h3 className="font-bold text-slate-900">{method.name}</h3>
+                        <p className="mt-1 text-sm text-slate-600">{method.number}</p>
                         {method.expiry !== "-" && (
-                          <p className="text-xs text-gray-500 mt-1">Expire: {method.expiry}</p>
+                          <p className="mt-1 text-xs text-slate-500">Expire: {method.expiry}</p>
                         )}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      {method.isDefault && (
-                        <span className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
-                          Par défaut
-                        </span>
-                      )}
-                      <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">
-                        Modifier
-                      </button>
+                      {method.isDefault && <StatusBadge label="Par défaut" tone="success" />}
+                      <button className="dx-btn-secondary py-2 text-sm">Modifier</button>
                     </div>
                   </div>
-                </div>
+                </SurfaceCard>
               ))}
             </div>
 
-            {/* Add Payment Method */}
-            <button className="w-full py-4 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-[#f1580c] hover:text-[#f1580c] transition-colors font-medium">
+            <button className="w-full rounded-xl border-2 border-dashed border-slate-300 py-4 text-sm font-semibold text-slate-600 transition hover:border-[#f1580c] hover:text-[#f1580c]">
               + Ajouter un moyen de paiement
             </button>
           </div>
         )}
-      </div>
+      </SurfaceCard>
     </div>
   );
 }
